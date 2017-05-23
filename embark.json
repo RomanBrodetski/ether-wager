@@ -1,0 +1,14 @@
+{
+  "contracts": ["app/contracts/**"],
+  "app": {
+    "css/app.css": ["app/css/**"],
+    "images/": ["app/images/**"],
+    "js/app.js": ["embark.js", "app/js/_vendor/jquery.min.js", "app/js/_vendor/bootstrap.min.js", "app/js/util/**", "app/js/models/**", "app/js/**"],
+    "index.html": "app/index.html"
+  },
+  "buildDir": "dist/",
+  "config": "config/",
+  "plugins": {
+    "embark-babel": {"files": ["**/*.js", "**/*.jsx", "!**/_vendor/*.js"]}
+  }
+}
