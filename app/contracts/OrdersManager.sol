@@ -1,3 +1,6 @@
+pragma solidity ^0.4.8;
+
+
 import "./SafeMath.sol";
 import "./EventfulMarket.sol";
 

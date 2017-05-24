@@ -5,4 +5,8 @@ contract EventfulMarket {
     event CreateOrder(
         uint id
     );
+
+    event CreateTrade(
+        uint id
+    );
 }

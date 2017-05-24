@@ -20,17 +20,28 @@ contract CfdMarket is OrdersManager {
     mapping (uint => Trade) public trades;
 
 
-    function trade(uint id) {
-        Order order = orders[id];
-        assert(msg.value == order.collateral)
+    function trade(uint orderId) payable returns (uint) {
+        Order order = orders[orderId];
+        assert(msg.value == order.collateral);
         // assert(msg.sender != order.owner)
-        delete orders[id];
+        delete orders[orderId];
 
-        Trade memory
+        Trade memory trade = Trade(
+            order.symbol,
+            order.long ? msg.sender : order.owner,
+            order.long ? order.owner : msg.sender,
+            order.timestampLimit,
+            order.limit,
+            order.collateral
+        );
+
+        uint tradeId = nextTradeId();
+        trades[tradeId] = trade;
+        return tradeId;
     }
 
 
-    function
-
-
+    function nextTradeId() internal returns (uint) {
+             return ++lastTradeId;
+    }
 }
