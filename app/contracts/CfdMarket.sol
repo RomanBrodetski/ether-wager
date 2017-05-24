@@ -2,41 +2,35 @@ pragma solidity ^0.4.8;
 
 import "./SafeMath.sol";
 import "./EventfulMarket.sol";
-contract CfdMarket is SafeMath, EventfulMarket {
+import "./OrdersManager.sol";
 
-    uint constant minCollateral = 1 finney;
+contract CfdMarket is OrdersManager {
 
-    struct Order {
+    struct Trade {
         string symbol;
-        bool long;
-        uint collateral;
-        uint takerFee;
-        address owner;
+        address short;
+        address long;
+        uint timestampLimit;
+        uint price;
+        uint collateral; // each
     }
 
-    uint public lastOrderId;
+    uint public lastTradeId;
 
-    mapping (uint => Order) public orders;
+    mapping (uint => Trade) public trades;
 
-    function createOrder(
-        string symbol,
-        bool   long,
-        uint   takerFee
-    ) payable returns (uint) {
-        assert(msg.value >  0);
-        assert(takerFee  >= 0);
-        assert(takerFee  <= msg.value / 2);
 
-        Order memory order = Order(symbol, long, msg.value, takerFee, msg.sender);
-        uint id = nextId();
+    function trade(uint id) {
+        Order order = orders[id];
+        assert(msg.value == order.collateral)
+        // assert(msg.sender != order.owner)
+        delete orders[id];
 
-        CreateOrder(id);
-
-        orders[id] = order;
-        return id;
+        Trade memory
     }
 
-    function nextId() internal returns (uint) {
-             return ++lastOrderId;
-    }
+
+    function
+
+
 }

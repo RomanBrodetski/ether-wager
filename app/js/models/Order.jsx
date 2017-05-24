@@ -4,7 +4,9 @@ class Order {
     this.symbol = blockchainOrder[0].toString()
     this.long = blockchainOrder[1].toString()
     this.collateral = blockchainOrder[2].toNumber()
-    this.takerFee = blockchainOrder[3].toNumber()
+    this.limit = blockchainOrder[3].toNumber()
+    this.timestampLimit = blockchainOrder[4].toNumber()
+    this.owner = blockchainOrder[5].toString()
   }
 
   isNull() {

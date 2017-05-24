@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <!-- TradingView Widget BEGIN -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+<!-- TradingView Widget END -->
+
+    <script>
+    function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+    var fx = getParameterByName('value');
+          var fxWidget = new TradingView.widget({
+        "autosize": true,
+        "symbol": fx,
+        "interval": "D",
+        "timezone": "Etc/UTC",
+        "theme": "White",
+        "style": "1",
+        "locale": "en",
+        "hide_top_toolbar": true,
+        "save_image": false,
+        "hideideas": true
+      });
+    </script>
+  </head>
+  <body>
+
+  </body>
+</html>

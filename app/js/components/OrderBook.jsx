@@ -4,6 +4,22 @@ class OrderBook extends React.Component {
     super(props)
 
     this.state = {}
+    this.cancel = this.cancel.bind(this)
+    this.trade = this.trade.bind(this)
+  }
+
+  trade(e, id) {
+    e.preventDefault()
+    OrdersDAO
+      .trade(id)
+      .then(this.props.onTrade)
+  }
+
+  cancel(e, id) {
+    e.preventDefault()
+    OrdersDAO
+      .cancel(id)
+      .then(this.props.onTrade)
   }
 
   render() {
@@ -13,15 +29,28 @@ class OrderBook extends React.Component {
           <tr>
             <th>Symbol</th>
             <th>Vol. ETH</th>
-            <th>Fee</th>
+            <th><i>Limit</i></th>
+            <th>Good until</th>
           </tr>
         </thead>
         <tbody>
           {this.props.orders.map((order) => (
-            <tr>
+            <tr key={order.id}>
               <td>{order.symbol}</td>
-              <td>{order.collateral}</td>
-              <td>{order.takerFee}</td>
+              <td>{order.collateral / Math.pow(10, 18)}</td>
+              <td>{order.limit}</td>
+              <td>{order.timestampLimit}</td>
+              <td>
+                <a href="#" onClick={(e) => this.trade(e, order.id)}>
+                  <span className="glyphicon glyphicon-send"></span>
+                </a>
+              </td>
+              <td>
+                {order.owner == web3.eth.defaultAccount &&
+                  (<a href="#" onClick={(e) => this.cancel(e, order.id)}>
+                    <span className="glyphicon glyphicon-remove"></span>
+                   </a>)}
+              </td>
             </tr>
           ))}
         </tbody>

@@ -1,0 +1,5 @@
+class AlphaAPI {
+  static requestPrice() {
+
+  }
+}
