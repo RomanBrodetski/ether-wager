@@ -8,10 +8,10 @@ class OrderBook extends React.Component {
     this.trade = this.trade.bind(this)
   }
 
-  trade(e, id) {
+  trade(e, order) {
     e.preventDefault()
     OrdersDAO
-      .trade(id)
+      .trade(order)
       .then(this.props.onTrade)
   }
 
@@ -27,6 +27,7 @@ class OrderBook extends React.Component {
       <table className="table">
         <thead>
           <tr>
+            <th>Type</th>
             <th>Symbol</th>
             <th>Vol. ETH</th>
             <th><i>Limit</i></th>
@@ -35,13 +36,14 @@ class OrderBook extends React.Component {
         </thead>
         <tbody>
           {this.props.orders.map((order) => (
-            <tr key={order.id}>
+            <tr key={order.id} className={order.long ? "success" : "danger"}>
+              <td>{order.long ? "LONG" : "SHORT"}</td>
               <td>{order.symbol}</td>
               <td>{order.collateral / Math.pow(10, 18)}</td>
               <td>{order.limit}</td>
               <td>{order.timestampLimit}</td>
               <td>
-                <a href="#" onClick={(e) => this.trade(e, order.id)}>
+                <a href="#" onClick={(e) => this.trade(e, order)}>
                   <span className="glyphicon glyphicon-send"></span>
                 </a>
               </td>

@@ -3,5 +3,16 @@
     "gas": "auto",
     "contracts": {
     }
+  },
+  "testnet": {
+    "gas": "auto",
+    "contracts": {
+      "EventfulMarket": {"deploy": false},
+      "OrdersManager": {"deploy": false},
+      "SafeMath": {"deploy": false},
+      "OraclizeI": {"deploy": false},
+      "OraclizeAddrResolverI": {"deploy": false},
+      "usingOraclize": {"deploy": false}
+    }
   }
 }

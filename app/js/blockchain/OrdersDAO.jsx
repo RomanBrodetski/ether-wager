@@ -16,17 +16,17 @@ class OrdersDAO {
     return CfdMarket.createOrder(
         symbol,
         long,
-        priceLimit,
+        priceLimit * 100,
         timestampLimit,
         {value: collateral * Math.pow(10, 18)}
       )
   }
 
-  static cancel(id) {
-    return CfdMarket.cancelOrder(id)
+  static cancel(orderId) {
+    return CfdMarket.cancelOrder(orderId)
   }
 
-  static trade(id) {
-    return CfdMarket.trade(id)
+  static trade(order) {
+    return CfdMarket.trade(order.id, {value: order.collateral, gas: 500000})
   }
 }

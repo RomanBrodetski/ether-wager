@@ -3,7 +3,7 @@
   "app": {
     "css/app.css": ["app/css/**"],
     "images/": ["app/images/**"],
-    "js/app.js": ["embark.js", "app/js/_vendor/jquery.min.js", "app/js/_vendor/bootstrap.min.js", "app/js/util/**", "app/js/models/**", "app/js/**"],
+    "js/app.js": ["embark.js", "app/js/_vendor/jquery.min.js", "app/js/_vendor/bootstrap.min.js", "app/js/util/**", "app/js/service/**", "app/js/models/**", "app/js/**"],
     "index.html": "app/index.html",
     "chart.html": "app/chart.html"
   },

@@ -12,8 +12,8 @@ contract OrdersManager is SafeMath, EventfulMarket {
         string symbol;
         bool long;
         uint collateral;
-        uint limit;
-        uint timestampLimit;
+        uint limitCents;
+        uint expiration;
         address owner;
     }
 
@@ -24,12 +24,12 @@ contract OrdersManager is SafeMath, EventfulMarket {
     function createOrder(
         string symbol,
         bool   long,
-        uint   limit,
-        uint   timestampLimit
+        uint   limitCents,
+        uint   expiration
     ) payable returns (uint) {
         assert(msg.value >  minCollateral);
 
-        Order memory order = Order(symbol, long, msg.value, limit, timestampLimit, msg.sender);
+        Order memory order = Order(symbol, long, msg.value, limitCents, expiration, msg.sender);
         uint id = nextOrderId();
 
         CreateOrder(id);
@@ -46,7 +46,7 @@ contract OrdersManager is SafeMath, EventfulMarket {
         delete orders[id];
     }
 
-    function nextOrderId() internal returns (uint) {
+    function nextOrderId() returns (uint) {
              return ++lastOrderId;
     }
 }

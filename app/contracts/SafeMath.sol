@@ -25,6 +25,14 @@ contract SafeMath {
     return c;
   }
 
+  function max(uint a, uint b) internal constant returns (uint) {
+    return a >= b ? a : b;
+  }
+
+  function min(uint a, uint b) internal constant returns (uint) {
+    return a < b ? a : b;
+  }
+
   function max64(uint64 a, uint64 b) internal constant returns (uint64) {
     return a >= b ? a : b;
   }
