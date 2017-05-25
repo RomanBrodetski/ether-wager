@@ -15,7 +15,7 @@ class CreateOrder extends React.Component {
 
   }
 
- handleInputChange(event) {
+  handleInputChange(event) {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     const name = event.target.name;
 
@@ -31,66 +31,76 @@ class CreateOrder extends React.Component {
   }
 
   createOrder() {
+    const timestamp = (new Date(this.state.timestamp).getTime())/1000;
+
     OrdersDAO.createOrder(
       this.state.collateral,
       this.props.symbol.symbol,
       this.state.long,
       this.state.limit,
-      this.state.timestamp
+      timestamp
     ).then(this.props.onTrade)
   }
 
   render() {
+    const dateFromState = new Date(this.state.timestamp);
+    const linkStyle = {
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      whiteSpace: "nowrap"
+    };
+
     return (
       <div className="panel panel-default">
-        <div className="panel-heading">Create Order</div>
+        <div className="panel-heading">Create Order for <strong>{this.props.symbol.symbol}</strong></div>
         <div className="panel-body">
           <form className="form">
-            <div className="col-md-6">
-              <div className="form-group">
-                <label>Symbol</label>
-                <input type="text" disabled className="form-control" value={this.props.symbol.symbol} />
-              </div>
-              <div className="form-group">
-                <label>Current Oracle Value</label>
-                <input type="text" disabled className="form-control" value={this.props.price} />
-              </div>
-              <div className="form-group">
-                <label>Oracle URL</label>
-                <input type="text" disabled className="form-control" value={this.props.symbol.oracle} />
+            <div className="row">
+              <div className="col-md-12">
+                <div className="form-group">
+                  <label>Current Oracle Value</label>
+                  <input type="text" disabled className="form-control" value={this.props.price} />
+                  <p className="help-block" style={linkStyle}>Oracle URL: <a href={this.props.symbol.oracle} className="text-muted" target="_blanc">{this.props.symbol.oracle}</a></p>
+                </div>
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="form-group">
-                <div className="input-group">
+            <div className="row">
+              <div className="col-md-6">
+                <div className="form-group">
                   <label>Collateral</label>
-                  <input onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} />
-                  <span className="input-group-addon">ETH</span>
+                  <div className="input-group">
+                    <input onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} />
+                    <span className="input-group-addon">ETH</span>
+                  </div>
+                </div>
+                <div className="radio">
+                  <label className="radio-inline">
+                    <input onChange={this.handleDirectionChange} type="radio" name="direction" value="long" checked={this.state.long} /> long
+                  </label>
+                  <label className="radio-inline">
+                    <input onChange={this.handleDirectionChange} type="radio" name="direction" value="short" checked={!this.state.long} /> short
+                  </label>
                 </div>
               </div>
-              <div className="radio">
-                <label className="radio-inline">
-                  <input onChange={this.handleDirectionChange} type="radio" name="direction" value="long" checked={this.state.long} /> long
-                </label>
-                <label className="radio-inline">
-                  <input onChange={this.handleDirectionChange} type="radio" name="direction" value="short" checked={!this.state.long} /> short
-                </label>
-              </div>
-              <div className="form-group">
-                <div className="input-group">
+              <div className="col-md-6">
+                <div className="form-group">
                   <label>Strike Price</label>
-                  <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} />
-                  <span className="input-group-addon">$</span>
+                  <div className="input-group">
+                    <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} />
+                    <span className="input-group-addon">$</span>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label>Expiration</label>
+                  <div className="input-group">
+                    <input onChange={this.handleInputChange} type="datetime-local" className="form-control" name="timestamp" placeholder="Timestamp" value={this.state.timestamp}/>
+                  </div>
                 </div>
               </div>
-              <div className="form-group">
-                <div className="input-group">
-                  <label>Expiration</label>
-                  <input onChange={this.handleInputChange} type="number" className="form-control" name="timestamp" placeholder="Timestamp" value={this.state.timestamp}/>
-                </div>
+              <div className="col-md-12">
+                <button type="button" onClick={this.createOrder} className="btn btn-default">Create Order</button>
               </div>
             </div>
-             <button type="button" onClick={this.createOrder} className="btn btn-default">Create Order</button>
           </form>
         </div>
       </div>
