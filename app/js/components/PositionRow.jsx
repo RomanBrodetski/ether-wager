@@ -59,11 +59,11 @@ class PositionRow extends React.Component {
       )
     } else if (this.props.position.canExecute()) {
       return (
-        <a className="btn btn-info" href="#" onClick={(e) => this.execute(e)}>expire</a>
+        <a className="btn btn-warning btn-sm" href="#" onClick={(e) => this.execute(e)}>expire</a>
       )
     } else if (this.props.position.canClaim()) {
       return (
-        <a className="btn btn-info" href="#" onClick={(e) => this.claim(e)}>claim</a>
+        <a className="btn btn-success btn-sm" href="#" onClick={(e) => this.claim(e)}>claim</a>
       )
     } else {
       return this.props.position.expiration
@@ -73,7 +73,7 @@ class PositionRow extends React.Component {
   render() {
     return (
       <tr className={this.props.position.state() == "closed" ? "" : (this.props.position.PNL(this.oraclePrice()) > 0 ? "success" : "danger")}>
-        <td><span className="label label-info">{this.props.position.state()}</span></td>
+        <td>{this.props.position.state()}</td>
         <td><span className={"label label-" + (this.props.position.long ? "success" : "danger")}>{this.props.position.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.position.symbol}</td>
         <td>{this.props.position.price}</td>

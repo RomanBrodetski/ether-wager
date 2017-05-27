@@ -3,6 +3,9 @@
 // #9c27b0 - pink*/
 
 /*.list-group-item.active>.badge, .nav-pills>.active>a>.badge*/
+body {
+  background: #f7f7f9;
+}
 
 .nav-pills > .active > a > .badge.badgeOrange,
 .nav-pills a > .badgeOrange {
