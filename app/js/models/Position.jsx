@@ -43,6 +43,7 @@ class Position {
   }
 
   canExecute() {
+    return true;
     return !this.executed && !this.oracleRequested && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
   }
 
@@ -55,7 +56,7 @@ class Position {
   }
 
   PNL(oraclePrice) {
-    return MathUtils.round(this.currentEquity(oraclePrice) - this.collateralETH, 3)
+    return this.currentEquity(oraclePrice) - this.collateralETH
   }
 
   currentEquity(oraclePrice) {
@@ -64,9 +65,9 @@ class Position {
       if (isFinite(p)) {
         var factor = p / this.price
         factor = Math.max(Math.min(factor, 2), 0)
-        if (!this.long)
-          factor = 1 / factor
-        return MathUtils.round(factor * this.collateralETH, 4)
+        const long = factor * this.collateralETH
+        const short = (this.collateralETH * 2) - long
+        return this.long ? long : short
       }
     }
   }

@@ -89,7 +89,7 @@ class PositionRow extends React.Component {
           )}
         </td>
         <td>{this.props.position.collateralETH}</td>
-        <td><span className={this.props.position.PNL(this.oraclePrice()) > 0 ? "text-danger" : "text-success"}>{this.props.position.PNL(this.oraclePrice())} ({this.PNLPerc()})</span></td>
+        <td><span className={this.props.position.PNL(this.oraclePrice()) > 0 ? "text-success" : "text-danger"}>{this.props.position.PNL(this.oraclePrice())} ({this.PNLPerc()})</span></td>
         <td>
             {this.props.position.oracleComissionETH}
         </td>

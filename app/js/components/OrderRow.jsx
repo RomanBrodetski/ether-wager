@@ -52,8 +52,8 @@ class OrderRow extends React.Component {
     } else {
       return (
         <div>
-          <a href="#" onClick={this.trade} className="btn btn-default btn-sm">create position</a>
-          {/* {this.props.order.owner == web3.eth.defaultAccount && <a href="#" onClick={this.cancel} className="btn btn-danger btn-sm">delete position</a>} */}
+          <a href="#" onClick={this.trade} className="btn btn-default btn-sm">trade</a>
+          {/* {this.props.order.owner == web3.eth.defaultAccount && <a href="#" onClick={this.cancel} className="btn btn-danger btn-sm">delete order</a>} */}
         </div>
       )
     }

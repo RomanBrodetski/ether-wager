@@ -102,7 +102,7 @@ contract CfdMarket is OrdersManager {
 
     function execute(uint positionId) {
         Position pos = positions[positionId];
-        // assert(time passed)
+        assert(block.timestamp > pos.expiration);
         assert(!pos.oracleRequested);
 
         pos.oracleRequested = true;
