@@ -139,13 +139,16 @@ class App extends React.Component {
                       {this.state.positions === undefined
                         ? <div className="tab-content"><h1>Loading...</h1></div>
                         : <div className="tab-content">
-                            <div role="tabpanel" className="tab-pane active">
-                              <Positions
-                                onTrade={this.loadBlockchainData}
-                                oracles={this.state.oracles}
-                                symbol={this.state.activeSymbol}
-                                positions={this.choosePositions(this.state.positions)} />
-                            </div>
+                          {this.state.positions === []
+                            ? <p className="text-info" style={{marginTop: '1em'}}>You don't have any positions yet</p>
+                            : <div role="tabpanel" className="tab-pane active">
+                                <Positions
+                                  onTrade={this.loadBlockchainData}
+                                  oracles={this.state.oracles}
+                                  symbol={this.state.activeSymbol}
+                                  positions={this.choosePositions(this.state.positions)} />
+                              </div>
+                          }
                           </div>
                       }
                     </div>

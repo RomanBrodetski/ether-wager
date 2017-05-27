@@ -81,7 +81,7 @@ class CreateOrder extends React.Component {
                 <div className="form-group">
                   <label>Collateral</label>
                   <div className="input-group">
-                    <input onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} />
+                    <input onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} min="0.01" step="0.01"/>
                     <span className="input-group-addon">ETH</span>
                   </div>
                 </div>
@@ -96,14 +96,14 @@ class CreateOrder extends React.Component {
                 <div className="form-group">
                   <label>Strike Price</label>
                   <div className="input-group">
-                    <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} />
+                    <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="1"/>
                     <span className="input-group-addon">$</span>
                   </div>
                 </div>
                 <div className="form-group">
                   <label>Expiration</label>
                   <div className="input-group">
-                    <input onChange={this.handleInputChange} type="datetime-local" className="form-control" name="timestamp" placeholder="Timestamp" value={this.state.date} />
+                    <input onChange={this.handleInputChange} type="datetime-local" className="form-control" name="date" placeholder="Timestamp" value={this.state.date} />
                   </div>
                 </div>
                 <button type="button" onClick={this.createOrder} className="btn btn-success">Create Order</button>
