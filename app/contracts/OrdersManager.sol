@@ -30,6 +30,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         uint   limitCents,
         uint   expiration
     ) payable returns (uint) {
+        assert(2 * msg.value * limitCents / limitCents == 2 * msg.value);
         assert(msg.value >  minCollateral);
 
         Order memory order = Order(symbol, oracle, long, msg.value, limitCents, expiration, msg.sender);

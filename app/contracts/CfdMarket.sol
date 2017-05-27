@@ -1,10 +1,6 @@
 pragma solidity ^0.4.8;
 
-import "./SafeMath.sol";
-import "./EventfulMarket.sol";
 import "./OrdersManager.sol";
-import "./OracleUrls.sol";
-import "./vendor/oraclizeAPI.sol";
 
 
 contract CfdMarket is OrdersManager {
@@ -18,7 +14,7 @@ contract CfdMarket is OrdersManager {
         uint priceCents; // strike price
         uint collateral; // each party's collateral
 
-        bool executed;
+        bool executed; //7
         bool oracleRequested;
         uint oracleComission; // price paid for the oracle
         uint expirationPriceCents; // price returned by the oracle
@@ -34,7 +30,6 @@ contract CfdMarket is OrdersManager {
 
     function trade(uint orderId) payable returns (uint) {
         Order order = orders[orderId];
-        assert(order.collateral > 0);
         assert(msg.value == order.collateral);
         // assert(msg.sender != order.owner)
 
@@ -77,7 +72,7 @@ contract CfdMarket is OrdersManager {
     }
 
     function __callback(bytes32 myId, string res) {
-        if (msg.sender != oraclize_cbAddress()) throw;
+        assert(msg.sender == oraclize_cbAddress());
 
         uint positionId = myidToPositionId[myId];
         delete myidToPositionId[myId];
@@ -90,10 +85,15 @@ contract CfdMarket is OrdersManager {
         pos.expirationPriceCents = currentPriceCents;
         pos.executed = true;
 
-        uint baseCollateral = 2 * pos.collateral - pos.oracleComission;
 
-        pos.longClaim = min(baseCollateral / 2  * currentPriceCents / pos.priceCents, baseCollateral);
+        uint baseCollateral = 2 * pos.collateral - pos.oracleComission;
+        assert(currentPriceCents == 0 || baseCollateral * currentPriceCents / currentPriceCents == baseCollateral);
+
+        pos.longClaim = min(baseCollateral / 2 * currentPriceCents / pos.priceCents, baseCollateral);
         pos.shortClaim = baseCollateral - pos.longClaim;
+
+        if (pos.longClaim + pos.shortClaim + pos.oracleComission != pos.collateral * 2)
+            throw;
 
         OracleRespond(positionId);
 
@@ -108,6 +108,9 @@ contract CfdMarket is OrdersManager {
         pos.oracleRequested = true;
         pos.oracleComission = oraclize_getPrice("URL");
 
+        if (pos.oracleComission > pos.collateral)
+            throw;
+
         bytes32 myId = oraclize_query("URL", buildOracleUrl(pos.symbol, pos.oracle));
         positions[positionId] = pos;
         myidToPositionId[myId] = positionId;
@@ -115,6 +118,6 @@ contract CfdMarket is OrdersManager {
 
 
     function nextPositionId() internal returns (uint) {
-             return ++lastPositionId;
+        return ++lastPositionId;
     }
 }
