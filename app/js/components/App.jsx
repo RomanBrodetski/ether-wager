@@ -80,33 +80,52 @@ class App extends React.Component {
           </nav>
           <div className="container-fluid">
             <div className="col-md-2">
-              <SelectSymbol counters={this.state.counters} changeSymbol={this.changeSymbol} activeSymbol={this.state.activeSymbol} symbols={this.props.symbols} />
+              <SelectSymbol
+                counters={this.state.counters}
+                changeSymbol={this.changeSymbol}
+                activeSymbol={this.state.activeSymbol}
+                symbols={this.props.symbols} />
             </div>
             <div className="col-md-5">
-              {(this.state.orders === undefined) ? (
-                <h1>Loading...</h1>
-              ) : (
-                <OrderBook
-                  orders={this.state.orders.filter((order) => order.symbol === this.state.activeSymbol)}
-                  onTrade={this.loadBlockchainData}/>
-              )}
-              <div>
-                <TradingView symbol={this.state.symbols[this.state.activeSymbol].tv} />
+              <h4>Open Orders</h4>
+              <div className="row">
+                <div className="col-md-12">
+                  {
+                    this.state.orders === undefined
+                      ? <h1>Loading...</h1>
+                      : <OrderBook
+                          orders={this.state.orders.filter((order) => order.symbol === this.state.activeSymbol)}
+                          onTrade={this.loadBlockchainData} />
+                  }
+                  <div>
+                    <TradingView symbol={this.state.symbols[this.state.activeSymbol].tv} />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="col-md-5">
+              <h4>My Positions</h4>
               <div className="row">
-                <h4> My Positions </h4>
-               {(this.state.positions === undefined) ? (
-                  <h1>Loading...</h1>
-                ) : (
-                  <Positions onTrade={this.loadBlockchainData} oracles={this.state.oracles} symbol={this.state.activeSymbol} positions={this.state.positions}/>
-                )}
+                <div className="col-md-12">
+                   {
+                     this.state.positions === undefined
+                      ? <h1>Loading...</h1>
+                      : <Positions
+                          onTrade={this.loadBlockchainData}
+                          oracles={this.state.oracles}
+                          symbol={this.state.activeSymbol}
+                          positions={this.state.positions} />
+                    }
+                </div>
               </div>
               <div className="row">
-                <CreateOrder oracle={this.state.oracles[this.state.activeSymbol] || {oracle: "...", price: "..."}} symbol={this.state.symbols[this.state.activeSymbol]} onTrade={this.loadBlockchainData}/>
+                <div className="col-md-12">
+                  <CreateOrder
+                    oracle={this.state.oracles[this.state.activeSymbol] || {oracle: "...", price: "..."}}
+                    symbol={this.state.symbols[this.state.activeSymbol]}
+                    onTrade={this.loadBlockchainData} />
+                </div>
               </div>
-
             </div>
           </div>
         </div>

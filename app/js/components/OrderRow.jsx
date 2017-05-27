@@ -58,7 +58,7 @@ class OrderRow extends React.Component {
 
     return (
       <tr>
-        <td><span  className={"label label-" + (this.props.order.long ? "success" : "danger")}> {this.props.order.long ? "LONG" : "SHORT"}</span></td>
+        <td><span  className={"label label-" + (this.props.order.long ? "success" : "warning")}> {this.props.order.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
         <td>{this.props.order.limit}</td>
         <td>{date.toLocaleDateString('de-DE', options)}</td>

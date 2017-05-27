@@ -1,0 +1,25 @@
+/*// #ff9800 - orange
+// #e51c23 - red
+// #9c27b0 - pink*/
+
+/*.list-group-item.active>.badge, .nav-pills>.active>a>.badge*/
+
+.nav-pills > .active > a > .badge.badgeOrange,
+.nav-pills a > .badgeOrange {
+  background: #ff9800;
+}
+
+.nav-pills > .active > a > .badge.badgeRed,
+.nav-pills a > .badgeRed {
+  background: #e51c23;
+}
+
+.nav-pills > .active > a > .badge.badgePink,
+.nav-pills a > .badgePink {
+  background: #9c27b0;
+}
+
+.nav-pills > .active > a > .badge.badgeGreen,
+.nav-pills a > .badgeGreen {
+  background: #5cb85c;
+}

@@ -23,10 +23,10 @@ class SelectSymbol extends React.Component {
       return this.props.counters[sym].myLongOrders + this.props.counters[sym].longPositions
   }
 
-  spanIfPresent(value, classs, title) {
+  spanIfPresent(value, symbolClass, title) {
     if (value && isFinite(value) && value > 0) {
       return(
-        <span className={classs} title={title}>
+        <span className={symbolClass} title={title}>
           {value}
         </span>
       )
@@ -41,8 +41,8 @@ class SelectSymbol extends React.Component {
             <a href="#" onClick={(e) => this.props.changeSymbol(e, symbolObj.symbol)}>
               {symbolObj.symbol}
               {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "badge", "total orders")}
-              {this.spanIfPresent(this.long(symbolObj.symbol), "badge", "my long orders and positions")}
-              {this.spanIfPresent(this.short(symbolObj.symbol), "badge", "my short orders and positions")}
+              {this.spanIfPresent(this.long(symbolObj.symbol), "badge badgeGreen", "my long orders and positions")}
+              {this.spanIfPresent(this.short(symbolObj.symbol), "badge badgeOrange", "my short orders and positions")}
             </a>
           </li>
         ))}
