@@ -36,6 +36,7 @@ class CreateOrder extends React.Component {
     OrdersDAO.createOrder(
       this.state.collateral,
       this.props.symbol.symbol,
+      this.props.symbol.oracle,
       this.state.long,
       this.state.limit,
       timestamp
@@ -59,8 +60,11 @@ class CreateOrder extends React.Component {
               <div className="col-md-12">
                 <div className="form-group">
                   <label>Current Oracle Value</label>
-                  <input type="text" disabled className="form-control" value={this.props.price} />
-                  <p className="help-block" style={linkStyle}>Oracle URL: <a href={this.props.symbol.oracle} className="text-muted" target="_blanc">{this.props.symbol.oracle}</a></p>
+                  <input type="text" disabled className="form-control" value={this.props.oracle.price || "..."} />
+                  <p className="help-block" style={linkStyle}>Url:
+                  <a className="text-muted" href={this.props.oracle.url} target="_blank">{this.props.oracle.url || "..."}</a></p>
+                  <p className="help-block" style={linkStyle}>JSON Path:
+                  <span className="text-muted">{this.props.oracle.query || "..."}</span></p>
                 </div>
               </div>
             </div>
@@ -98,7 +102,7 @@ class CreateOrder extends React.Component {
                 </div>
               </div>
               <div className="col-md-12">
-                <button type="button" onClick={this.createOrder} className="btn btn-default">Create Order</button>
+                <button type="button" onClick={this.createOrder} className="btn btn-success">Create Order</button>
               </div>
             </div>
           </form>

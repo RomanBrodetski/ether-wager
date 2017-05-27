@@ -12,9 +12,10 @@ class OrdersDAO {
   }
 
 
-  static createOrder(collateral, symbol, long, priceLimit, timestampLimit) {
+  static createOrder(collateral, symbol, oracle, long, priceLimit, timestampLimit) {
     return CfdMarket.createOrder(
         symbol,
+        Oracles.toBlockchain(oracle),
         long,
         priceLimit * 100,
         timestampLimit,

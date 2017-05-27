@@ -10,6 +10,7 @@
       "EventfulMarket": {"deploy": false},
       "OrdersManager": {"deploy": false},
       "SafeMath": {"deploy": false},
+      "OracleUrls": {"deploy": false},
       "OraclizeI": {"deploy": false},
       "OraclizeAddrResolverI": {"deploy": false},
       "usingOraclize": {"deploy": false}

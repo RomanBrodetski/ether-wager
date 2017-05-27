@@ -1,20 +1,21 @@
 var ShowDecimals = 4
 
+
 var Symbols = [
   {
     symbol: "AAPL",
     tv: "NASDAQ:AAPL",
-    oracle: "http://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=AAPL&interval=1min&apikey=P9ZM"
+    oracle: "Yahoo"
   },
   {
     symbol: "MSFT",
     tv: "NASDAQ:MSFT",
-    oracle: "http://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=1min&apikey=P9ZM"
+    oracle: "Yahoo"
   },
   {
     symbol: "TWTR",
-    tv: "NASDAQ:TWTR",
-    oracle: "http://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=TWTR&interval=1min&apikey=P9ZM"
+    tv: "NYSE:TWTR",
+    oracle: "Yahoo"
   }
 ]
 

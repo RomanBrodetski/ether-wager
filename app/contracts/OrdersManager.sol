@@ -3,13 +3,15 @@ pragma solidity ^0.4.8;
 
 import "./SafeMath.sol";
 import "./EventfulMarket.sol";
+import "./OracleUrls.sol";
 
-contract OrdersManager is SafeMath, EventfulMarket {
+contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
 
     uint constant minCollateral = 1 finney;
 
     struct Order {
         string symbol;
+        Oracles oracle;
         bool long;
         uint collateral;
         uint limitCents;
@@ -23,13 +25,14 @@ contract OrdersManager is SafeMath, EventfulMarket {
 
     function createOrder(
         string symbol,
+        Oracles oracle,
         bool   long,
         uint   limitCents,
         uint   expiration
     ) payable returns (uint) {
         assert(msg.value >  minCollateral);
 
-        Order memory order = Order(symbol, long, msg.value, limitCents, expiration, msg.sender);
+        Order memory order = Order(symbol, oracle, long, msg.value, limitCents, expiration, msg.sender);
         uint id = nextOrderId();
 
         CreateOrder(id);

@@ -3,13 +3,15 @@ pragma solidity ^0.4.8;
 import "./SafeMath.sol";
 import "./EventfulMarket.sol";
 import "./OrdersManager.sol";
+import "./OracleUrls.sol";
 import "./vendor/oraclizeAPI.sol";
 
 
-contract CfdMarket is OrdersManager, usingOraclize {
+contract CfdMarket is OrdersManager {
 
     struct Position {
         string symbol;
+        Oracles oracle;
         address short;
         address long;
         uint expiration;
@@ -35,6 +37,7 @@ contract CfdMarket is OrdersManager, usingOraclize {
 
         Position memory position = Position(
             order.symbol,
+            order.oracle,
             order.long ? msg.sender : order.owner,
             order.long ? order.owner : msg.sender,
             order.expiration,
@@ -57,11 +60,11 @@ contract CfdMarket is OrdersManager, usingOraclize {
 
         if (!pos.executed) throw;
         if (pos.longClaim > 0 && msg.sender == pos.long) {
-            pos.longClaim = 0;
             if (!pos.long.send(pos.longClaim)) throw;
+            pos.longClaim = 0;
         } else if (pos.shortClaim > 0 && msg.sender == pos.long) {
-            pos.shortClaim = 0;
             if (!pos.short.send(pos.shortClaim)) throw;
+            pos.shortClaim = 0;
         } else throw;
 
         positions[positionId] = pos;
@@ -84,7 +87,13 @@ contract CfdMarket is OrdersManager, usingOraclize {
         pos.longClaim = min(pos.collateral * currentPriceCents / pos.priceCents, pos.collateral * 2);
         pos.shortClaim = pos.collateral * 2 - pos.longClaim;
 
+        OracleRespond(positionId);
+
         positions[positionId] = pos;
+    }
+
+    function getOraclePrice() returns (uint) {
+        return oraclize.getPrice("URL");
     }
 
     function execute(uint positionId) {
@@ -92,19 +101,7 @@ contract CfdMarket is OrdersManager, usingOraclize {
         // assert(time passed)
         assert(!pos.executed);
 
-        string memory url = strConcat(
-            "https://query.yahooapis.com/v1/public/yql?q=select%20Ask,Bid%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22",
-            pos.symbol,
-            "%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="
-        );
-
-        string memory query = strConcat(
-            "json(",
-            url,
-            ").query.results.quote.Ask"
-        );
-
-        bytes32 myId = oraclize_query("URL", query);
+        bytes32 myId = oraclize_query("URL", buildOracleUrl(pos.symbol, pos.oracle));
         myidToPositionId[myId] = positionId;
     }
 
