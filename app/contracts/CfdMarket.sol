@@ -14,13 +14,16 @@ contract CfdMarket is OrdersManager {
         Oracles oracle;
         address short;
         address long;
-        uint expiration;
-        uint priceCents;
-        uint collateral; // each
+        uint expiration; // timestamp
+        uint priceCents; // strike price
+        uint collateral; // each party's collateral
+
         bool executed;
-        uint expirationPrice;
-        uint longClaim;
-        uint shortClaim;
+        bool oracleRequested;
+        uint oracleComission; // price paid for the oracle
+        uint expirationPriceCents; // price returned by the oracle
+        uint longClaim; // wei won by the longing party
+        uint shortClaim; // wei won by the shorting party
     }
 
     uint public lastPositionId;
@@ -43,7 +46,10 @@ contract CfdMarket is OrdersManager {
             order.expiration,
             order.limitCents,
             order.collateral,
+
             false,
+            false,
+            0,
             0,
             0,
             0
@@ -81,27 +87,29 @@ contract CfdMarket is OrdersManager {
         Position pos = positions[positionId];
         uint currentPriceCents = parseInt(res, 2);
 
-        pos.expirationPrice = currentPriceCents;
+        pos.expirationPriceCents = currentPriceCents;
         pos.executed = true;
 
-        pos.longClaim = min(pos.collateral * currentPriceCents / pos.priceCents, pos.collateral * 2);
-        pos.shortClaim = pos.collateral * 2 - pos.longClaim;
+        uint baseCollateral = 2 * pos.collateral - pos.oracleComission;
+
+        pos.longClaim = min(baseCollateral / 2  * currentPriceCents / pos.priceCents, baseCollateral);
+        pos.shortClaim = baseCollateral - pos.longClaim;
 
         OracleRespond(positionId);
 
         positions[positionId] = pos;
     }
 
-    function getOraclePrice() returns (uint) {
-        return oraclize.getPrice("URL");
-    }
-
     function execute(uint positionId) {
         Position pos = positions[positionId];
         // assert(time passed)
-        assert(!pos.executed);
+        assert(!pos.oracleRequested);
+
+        pos.oracleRequested = true;
+        pos.oracleComission = oraclize_getPrice("URL");
 
         bytes32 myId = oraclize_query("URL", buildOracleUrl(pos.symbol, pos.oracle));
+        positions[positionId] = pos;
         myidToPositionId[myId] = positionId;
     }
 

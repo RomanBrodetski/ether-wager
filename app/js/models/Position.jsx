@@ -8,16 +8,20 @@ class Position {
     this.expiration = blockchainPosition[4].toNumber()
     this.priceCents = blockchainPosition[5].toNumber()
     this.collateral = blockchainPosition[6].toString()
+
     this.executed = blockchainPosition[7]
-    this.expirationPriceCents = blockchainPosition[8].toNumber()
-    this.longClaim = blockchainPosition[9].toNumber()
-    this.shortClaim = blockchainPosition[10].toNumber()
+    this.oracleRequested = blockchainPosition[8]
+    this.oracleComission = blockchainPosition[9].toNumber()
+    this.expirationPriceCents = blockchainPosition[10].toNumber()
+    this.longClaim = blockchainPosition[11].toNumber()
+    this.shortClaim = blockchainPosition[12].toNumber()
 
     this.own = this.longAddress == web3.eth.defaultAccount || this.shortAddress == web3.eth.defaultAccount
     this.long = this.own && this.longAddress == web3.eth.defaultAccount
     this.price = this.priceCents / 100
     this.expirationPrice = this.expirationPriceCents / 100
     this.collateralETH = this.collateral / Math.pow(10, 18)
+    this.oracleComissionETH = this.oracleComission / Math.pow(10, 18)
   }
 
   isNull() {
@@ -25,9 +29,10 @@ class Position {
   }
 
   state() {
-    return (!this.executed && !this.canExecute() && "active") ||
+    return (!this.executed && !this.canExecute() && !this.oracleRequested && "active") ||
+           (!this.executed && !this.canExecute() && "waiting for oracle") ||
             (!this.executed && this.canExecute() && "pending") ||
-            (this.executed && this.canClaim() && "claim") || "closed"
+               (this.executed && this.canClaim() && "claim") || "closed"
   }
 
   stateOrder() {
@@ -38,7 +43,7 @@ class Position {
   }
 
   canExecute() {
-    return !this.executed && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
+    return !this.executed && !this.oracleRequested && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
   }
 
   canClaim() {

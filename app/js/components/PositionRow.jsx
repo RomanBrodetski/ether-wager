@@ -90,6 +90,9 @@ class PositionRow extends React.Component {
         <td>{this.props.position.collateralETH}</td>
         <td>{this.props.position.PNL(this.oraclePrice())} ({this.PNLPerc()}) </td>
         <td>
+            {this.props.position.oracleComissionETH}
+        </td>
+        <td>
             {this.expiresColumn()}
         </td>
       </tr>

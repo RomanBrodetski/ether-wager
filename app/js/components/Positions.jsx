@@ -19,6 +19,7 @@ class Positions extends React.Component {
             <th>Price</th>
             <th>Collateral</th>
             <th>PNL</th>
+            <th>Oracle Comission</th>
             <th>Expiration</th>
           </tr>
         </thead>
