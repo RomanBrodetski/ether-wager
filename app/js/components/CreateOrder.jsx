@@ -69,10 +69,14 @@ class CreateOrder extends React.Component {
                 <div className="form-group">
                   <label>Current Oracle Value</label>
                   <input type="text" disabled className="form-control" value={this.props.oracle.price || "..."} />
-                  <p className="help-block" style={linkStyle}>Url:
-                  <a className="text-muted" href={this.props.oracle.url} target="_blank">{this.props.oracle.url || "..."}</a></p>
-                  <p className="help-block" style={linkStyle}>JSON Path:
-                  <span className="text-muted">{this.props.oracle.query || "..."}</span></p>
+                  <div className="text-muted" style={linkStyle}>
+                    Url:
+                    <a className="text-muted" href={this.props.oracle.url} target="_blank"> {this.props.oracle.url || "..."}</a>
+                  </div>
+                  <div className="text-muted" style={linkStyle}>
+                    JSON Path:
+                    <span> {this.props.oracle.query || "..."}</span>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label>Collateral</label>

@@ -43,6 +43,15 @@ body {
   border: 1px solid #5cb85c;
 }
 
+.table.table-hover>thead>tr>th,
+.table.table-hover>tbody>tr>th,
+.table.table-hover>tfoot>tr>th,
+.table.table-hover>thead>tr>td,
+.table.table-hover>tbody>tr>td,
+.table.table-hover>tfoot>tr>td {
+  vertical-align: middle;
+}
+
 .mb0 {
   margin-bottom: 0
 }

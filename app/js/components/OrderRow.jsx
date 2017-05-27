@@ -1,14 +1,17 @@
 class OrderRow extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
-      loading: false
-    }
-    this.cancel = this.cancel.bind(this)
-    this.trade = this.trade.bind(this)
-    this.actions = this.actions.bind(this)
+      loading: false,
+      positionAmount: this.props.order.collateral / Math.pow(10, 18)
+    };
+
+    this.cancel = this.cancel.bind(this);
+    this.trade = this.trade.bind(this);
+    this.actions = this.actions.bind(this);
+    this.setAmount = this.setAmount.bind(this);
   }
 
 
@@ -32,6 +35,17 @@ class OrderRow extends React.Component {
     })
   }
 
+  // TODO: use positionAmount for creating a position
+  setAmount(event) {
+    let maxAmount = this.props.order.collateral / Math.pow(10, 18);
+    let positionAmount = (event.target.value <= maxAmount && event.target.value > 0) ? event.target.value : maxAmount;
+
+
+    this.setState({
+      positionAmount: positionAmount
+    })
+  }
+
   actions() {
     if (this.state.loading) {
       return "loading"
@@ -39,7 +53,7 @@ class OrderRow extends React.Component {
       return (
         <div>
           <a href="#" onClick={this.trade} className="btn btn-default btn-sm">create position</a>
-          {this.props.order.owner == web3.eth.defaultAccount && <a href="#" onClick={this.cancel} className="btn btn-danger btn-sm">delete position</a>}
+          {/* {this.props.order.owner == web3.eth.defaultAccount && <a href="#" onClick={this.cancel} className="btn btn-danger btn-sm">delete position</a>} */}
         </div>
       )
     }
@@ -55,6 +69,9 @@ class OrderRow extends React.Component {
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
         <td>{this.props.order.limit}</td>
         <td>{date.toLocaleDateString('de-DE', options)}</td>
+        <td>
+          <input onChange={this.setAmount} onBlur={this.setAmount} className="form-control input-sm" type="number" placeholder="type your amount" style={{fontSize: '13px'}} value={this.state.positionAmount} min="0.01" max={this.props.order.collateral / Math.pow(10, 18)} step="0.01"/>
+        </td>
         <td>{this.actions()}</td>
       </tr>
     );

@@ -13,10 +13,11 @@ class OrderBook extends React.Component {
         <thead>
           <tr>
             <th>Type</th>
-            <th>Col. ETH</th>
-            <th>Str. Price</th>
+            <th>Collateral ETH</th>
+            <th>Strike Price</th>
             <th>Expires</th>
-            <th></th>
+            <th>*Input*</th>
+            <th>*Action*</th>
           </tr>
         </thead>
         <tbody>
