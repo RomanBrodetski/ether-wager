@@ -66,10 +66,6 @@ class CreateOrder extends React.Component {
                   <p className="help-block" style={linkStyle}>JSON Path:
                   <span className="text-muted">{this.props.oracle.query || "..."}</span></p>
                 </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
                 <div className="form-group">
                   <label>Collateral</label>
                   <div className="input-group">
@@ -85,8 +81,6 @@ class CreateOrder extends React.Component {
                     <input onChange={this.handleDirectionChange} type="radio" name="direction" value="short" checked={!this.state.long} /> short
                   </label>
                 </div>
-              </div>
-              <div className="col-md-6">
                 <div className="form-group">
                   <label>Strike Price</label>
                   <div className="input-group">
@@ -100,8 +94,6 @@ class CreateOrder extends React.Component {
                     <input onChange={this.handleInputChange} type="datetime-local" className="form-control" name="timestamp" placeholder="Timestamp" value={this.state.timestamp}/>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-12">
                 <button type="button" onClick={this.createOrder} className="btn btn-success">Create Order</button>
               </div>
             </div>
