@@ -54,7 +54,7 @@ class OrderRow extends React.Component {
 
   render() {
     let date = new Date(this.props.order.timestampLimit * 1000);
-    let options = { day: 'numeric', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
 
     return (
       <tr>

@@ -2,17 +2,26 @@ class CreateOrder extends React.Component {
   constructor(props) {
     super(props)
 
+    let date = new Date();
+    date.setDate(date.getDate() + 7);
+    date.setMinutes(0);
+
     this.state = {
       collateral: "",
       long: true,
-      timestamp: "",
+      date: date.toISOString().slice(0, -8),
       limit: ""
-    }
+    };
 
-    this.handleInputChange = this.handleInputChange.bind(this)
-    this.handleDirectionChange = this.handleDirectionChange.bind(this)
-    this.createOrder = this.createOrder.bind(this)
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleDirectionChange = this.handleDirectionChange.bind(this);
+    this.createOrder = this.createOrder.bind(this);
+    // this.nextWeek = this.nextWeek.bind(this);
+  }
 
+  nextWeek(today) {
+    nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7);
+    return nextweek;
   }
 
   handleInputChange(event) {
@@ -31,7 +40,7 @@ class CreateOrder extends React.Component {
   }
 
   createOrder() {
-    const timestamp = (new Date(this.state.timestamp).getTime())/1000;
+    const timestamp = (new Date(this.state.date).getTime())/1000;
 
     OrdersDAO.createOrder(
       this.state.collateral,
@@ -44,7 +53,6 @@ class CreateOrder extends React.Component {
   }
 
   render() {
-    const dateFromState = new Date(this.state.timestamp);
     const linkStyle = {
       overflow: "hidden",
       textOverflow: "ellipsis",
@@ -91,7 +99,7 @@ class CreateOrder extends React.Component {
                 <div className="form-group">
                   <label>Expiration</label>
                   <div className="input-group">
-                    <input onChange={this.handleInputChange} type="datetime-local" className="form-control" name="timestamp" placeholder="Timestamp" value={this.state.timestamp}/>
+                    <input onChange={this.handleInputChange} type="datetime-local" className="form-control" name="timestamp" placeholder="Timestamp" value={this.state.date} />
                   </div>
                 </div>
                 <button type="button" onClick={this.createOrder} className="btn btn-success">Create Order</button>
