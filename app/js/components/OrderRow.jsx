@@ -53,12 +53,15 @@ class OrderRow extends React.Component {
   }
 
   render() {
+    let date = new Date(this.props.order.timestampLimit * 1000);
+    let options = { day: 'numeric', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+
     return (
       <tr>
         <td><span  className={"label label-" + (this.props.order.long ? "success" : "danger")}> {this.props.order.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
         <td>{this.props.order.limit}</td>
-        <td>{this.props.order.timestampLimit}</td>
+        <td>{date.toLocaleDateString('de-DE', options)}</td>
         <td>{this.actions()}</td>
       </tr>
     );
