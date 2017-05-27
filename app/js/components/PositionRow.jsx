@@ -71,8 +71,9 @@ class PositionRow extends React.Component {
   }
 
   render() {
+    // className={this.props.position.state() === "closed" ? "" : (this.props.position.PNL(this.oraclePrice()) > 0 ? "success" : "danger")}
     return (
-      <tr className={this.props.position.state() == "closed" ? "" : (this.props.position.PNL(this.oraclePrice()) > 0 ? "success" : "danger")}>
+      <tr>
         <td>{this.props.position.state()}</td>
         <td><span className={"label label-" + (this.props.position.long ? "success" : "danger")}>{this.props.position.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.position.symbol}</td>
@@ -80,15 +81,15 @@ class PositionRow extends React.Component {
         <td>
           {this.props.position.executed ? (
             <div>
-              <span title="Oracle price at execution time" className="glyphicon glyphicon-lock"></span>
               {this.props.position.expirationPrice}
+              <span title="Oracle price at execution time" className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>
             </div>
           ) : (
             this.oraclePrice(this.props.position)
           )}
         </td>
         <td>{this.props.position.collateralETH}</td>
-        <td>{this.props.position.PNL(this.oraclePrice())} ({this.PNLPerc()}) </td>
+        <td><span className={this.props.position.PNL(this.oraclePrice()) > 0 ? "text-danger" : "text-success"}>{this.props.position.PNL(this.oraclePrice())} ({this.PNLPerc()})</span></td>
         <td>
             {this.props.position.oracleComissionETH}
         </td>

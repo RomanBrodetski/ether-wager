@@ -66,6 +66,7 @@ class App extends React.Component {
       })
     })
     PositionsDAO.loadPositions().then((positions) => {
+      // Filter positions
       this.setState({
         positions: positions,
         counters: _(Object.keys(this.state.symbols).map((symbol) =>
@@ -101,7 +102,7 @@ class App extends React.Component {
   render() {
     return (
        <div>
-          <nav className="navbar navbar-default mb0">
+          <nav className="navbar navbar-default">
             <div className="container-fluid">
               <div className="navbar-header">
                   <a className="navbar-brand" href="#">CFD Market</a>
@@ -114,21 +115,19 @@ class App extends React.Component {
           <div className="container-fluid">
             <div className="row">
               <div className="col-md-12">
-                <a role="button" className="btn btn-default btn-xs pull-right" style={{margin:"10px 0"}} onClick={this.toggle} href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                  My positions overview
-                  {
-                    this.state.ui.myPositionsOpen
-                    ? <span className="glyphicon glyphicon-chevron-down" aria-hidden="true" style={{paddingLeft: "5px"}}></span>
-                    : <span className="glyphicon glyphicon-chevron-up" aria-hidden="true" style={{paddingLeft: "5px"}}></span>
-                  }
-                </a>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-12">
-                <div className={this.state.ui.myPositionsOpen ? "collapse.in" : "collapse"}>
-                  <div className="panel panel-default">
-                  {/* <div className="well"> */}
+                <div className="panel panel-primary">
+                  <div className="panel-heading">
+                    <span onClick={this.toggle}>
+                      My positions overview
+                      {
+                        this.state.ui.myPositionsOpen
+                        ? <span className="glyphicon glyphicon-menu-down" aria-hidden="true" style={{paddingLeft: '5px', fontSize: '11px'}}></span>
+                        : <span className="glyphicon glyphicon-menu-up" aria-hidden="true" style={{paddingLeft: '5px', fontSize: '11px'}}></span>
+                      }
+                    </span>
+                  </div>
+
+                  <div className={this.state.ui.myPositionsOpen ? "panel-body" : "hidden panel-body"}>
                     <ul className="nav nav-tabs" role="tablist">
                       <li role="presentation" className={this.state.ui.currentTab === "allPositions" ? "active" : ""}><a href="#" name="allPositions" onClick={this.switchTabs}>All my positions</a></li>
                       <li role="presentation" className={this.state.ui.currentTab === "isActive" ? "active" : ""}><a href="#" name="isActive" onClick={this.switchTabs}>Active positions</a></li>

@@ -7,7 +7,7 @@ body {
   background: #f7f7f9;
 }
 
-.nav-pills > .active > a > .badge.badgeOrange,
+/*.nav-pills > .active > a > .badge.badgeOrange,
 .nav-pills a > .badgeOrange {
   background: #ff9800;
 }
@@ -25,6 +25,22 @@ body {
 .nav-pills > .active > a > .badge.badgeGreen,
 .nav-pills a > .badgeGreen {
   background: #5cb85c;
+}*/
+
+.badgeOrange {
+  border: 1px solid #ff9800;
+}
+
+.badgeRed {
+  border: 1px solid #e51c23;
+}
+
+.badgePink {
+  border: 1px solid #9c27b0;
+}
+
+.badgeGreen {
+  border: 1px solid #5cb85c;
 }
 
 .mb0 {

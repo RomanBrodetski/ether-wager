@@ -9,7 +9,7 @@ class Positions extends React.Component {
 
   render() {
     return (
-      <table className="table">
+      <table className="table table-hover mb0">
         <thead>
           <tr>
             <th>State</th>
@@ -17,7 +17,7 @@ class Positions extends React.Component {
             <th>Symbol</th>
             <th>Str. Price</th>
             <th>Price</th>
-            <th>Ξ</th>
+            <th>Collateral</th>
             <th>PNL</th>
             <th>Oracle Comission</th>
             <th>Expiration</th>

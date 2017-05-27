@@ -38,15 +38,8 @@ class OrderRow extends React.Component {
     } else {
       return (
         <div>
-           <a href="#" onClick={this.trade}>
-              <span className="glyphicon glyphicon-send"></span>
-          </a>
-          <div>
-            {(this.props.order.owner == web3.eth.defaultAccount) &&
-            (<a href="#" onClick={this.cancel}>
-              <span className="glyphicon glyphicon-remove"></span>
-             </a>)}
-          </div>
+          <a href="#" onClick={this.trade} className="btn btn-default btn-sm">create position</a>
+          {this.props.order.owner == web3.eth.defaultAccount && <a href="#" onClick={this.cancel} className="btn btn-danger btn-sm">delete position</a>}
         </div>
       )
     }
