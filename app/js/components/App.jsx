@@ -6,7 +6,10 @@ class App extends React.Component {
       activeSymbol: this.props.symbols[0].symbol,
       symbols: _(this.props.symbols).indexBy("symbol"),
       oracles: {},
-      counters: {}
+      counters: {},
+      ui: {
+        myPositionsOpen: true
+      }
     }
     this.loadBlockchainData = this.loadBlockchainData.bind(this)
     this.loadSymbolOracles = this.loadSymbolOracles.bind(this)
@@ -14,7 +17,17 @@ class App extends React.Component {
     this.loadBlockchainData()
     this.loadSymbolOracles()
 
+    this.toggle = this.toggle.bind(this);
+
     CfdMarket.OracleRespond({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainTradeEvent.bind(this))
+  }
+
+  toggle(event) {
+    this.setState({
+      ui: {
+        myPositionsOpen: !this.state.ui.myPositionsOpen
+      }
+    })
   }
 
   handleBlockchainTradeEvent() {
@@ -69,7 +82,7 @@ class App extends React.Component {
   render() {
     return (
        <div>
-          <nav className="navbar navbar-default">
+          <nav className="navbar navbar-default mb0">
             <div className="container-fluid">
               <div className="navbar-header">
                   <a className="navbar-brand" href="#">CFD Market</a>
@@ -78,7 +91,42 @@ class App extends React.Component {
               </ul>
             </div>
           </nav>
+
           <div className="container-fluid">
+
+            <div className="row">
+              {/* <a className="btn btn-primary" role="button" onClick={this.toggle}>
+                Link with href
+              </a> */}
+
+              <div className={this.state.ui.myPositionsOpen ? "collapse.in" : "collapse"}>
+                <div className="well">
+                  <ul className="nav nav-tabs" role="tablist">
+                    <li role="presentation" className="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Active positions</a></li>
+                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Pending / Claim / Waiting for oracle</a></li>
+                    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Closed</a></li>
+                  </ul>
+
+                  <div className="tab-content">
+                    <div role="tabpanel" className="tab-pane active" id="home">
+                      {
+                        this.state.positions === undefined
+                        ? <h1>Loading...</h1>
+                        : <Positions
+                          onTrade={this.loadBlockchainData}
+                          oracles={this.state.oracles}
+                          symbol={this.state.activeSymbol}
+                          positions={this.state.positions} />
+                      }
+                    </div>
+
+                    <div role="tabpanel" className="tab-pane" id="profile">...</div>
+                    <div role="tabpanel" className="tab-pane" id="messages">...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div className="col-md-2">
               <SelectSymbol
                 counters={this.state.counters}
@@ -86,7 +134,8 @@ class App extends React.Component {
                 activeSymbol={this.state.activeSymbol}
                 symbols={this.props.symbols} />
             </div>
-            <div className="col-md-5">
+
+            <div className="col-md-7">
               <h4>Open Orders</h4>
               <div className="row">
                 <div className="col-md-12">
@@ -103,21 +152,7 @@ class App extends React.Component {
                 </div>
               </div>
             </div>
-            <div className="col-md-5">
-              <h4>My Positions</h4>
-              <div className="row">
-                <div className="col-md-12">
-                   {
-                     this.state.positions === undefined
-                      ? <h1>Loading...</h1>
-                      : <Positions
-                          onTrade={this.loadBlockchainData}
-                          oracles={this.state.oracles}
-                          symbol={this.state.activeSymbol}
-                          positions={this.state.positions} />
-                    }
-                </div>
-              </div>
+            <div className="col-md-3">
               <div className="row">
                 <div className="col-md-12">
                   <CreateOrder
