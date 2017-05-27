@@ -43,7 +43,6 @@ class Position {
   }
 
   canExecute() {
-    return true;
     return !this.executed && !this.oracleRequested && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
   }
 
