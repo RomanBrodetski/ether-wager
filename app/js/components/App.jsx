@@ -8,7 +8,8 @@ class App extends React.Component {
       oracles: {},
       counters: {},
       ui: {
-        myPositionsOpen: true
+        myPositionsOpen: true,
+        currentTab: "isActive",
       }
     }
     this.loadBlockchainData = this.loadBlockchainData.bind(this)
@@ -24,9 +25,7 @@ class App extends React.Component {
 
   toggle(event) {
     this.setState({
-      ui: {
-        myPositionsOpen: !this.state.ui.myPositionsOpen
-      }
+      ui: Object.assign(this.state.ui, { currentTab: event.target.name })
     })
   }
 
@@ -95,33 +94,49 @@ class App extends React.Component {
           <div className="container-fluid">
 
             <div className="row">
-              {/* <a className="btn btn-primary" role="button" onClick={this.toggle}>
-                Link with href
-              </a> */}
-
               <div className={this.state.ui.myPositionsOpen ? "collapse.in" : "collapse"}>
                 <div className="well">
                   <ul className="nav nav-tabs" role="tablist">
-                    <li role="presentation" className="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Active positions</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Pending / Claim / Waiting for oracle</a></li>
-                    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Closed</a></li>
+                    <li role="presentation" className={this.state.ui.currentTab === "isActive" ? "active" : ""}><a href="#" name="isActive" onClick={this.toggle}>Active positions</a></li>
+                    <li role="presentation" className={this.state.ui.currentTab === "needsAttention" ? "active" : ""}><a href="#" name="needsAttention" onClick={this.toggle}>Pending / Claim / Waiting for oracle</a></li>
+                    <li role="presentation" className={this.state.ui.currentTab === "isClosed" ? "active" : ""}><a href="#" name="isClosed" onClick={this.toggle}>Closed</a></li>
                   </ul>
 
                   <div className="tab-content">
-                    <div role="tabpanel" className="tab-pane active" id="home">
+                    <div role="tabpanel" className={this.state.ui.currentTab === "isActive" ? "tab-pane active" : "tab-pane"}>
                       {
                         this.state.positions === undefined
                         ? <h1>Loading...</h1>
                         : <Positions
-                          onTrade={this.loadBlockchainData}
-                          oracles={this.state.oracles}
-                          symbol={this.state.activeSymbol}
-                          positions={this.state.positions} />
+                            onTrade={this.loadBlockchainData}
+                            oracles={this.state.oracles}
+                            symbol={this.state.activeSymbol}
+                            positions={this.state.positions.filter((el) => ( el.state() === "active" ))} />
                       }
                     </div>
 
-                    <div role="tabpanel" className="tab-pane" id="profile">...</div>
-                    <div role="tabpanel" className="tab-pane" id="messages">...</div>
+                    <div role="tabpanel" className={this.state.ui.currentTab === "needsAttention" ? "tab-pane active" : "tab-pane"}>
+                      {
+                        this.state.positions === undefined
+                        ? <h1>Loading...</h1>
+                        : <Positions
+                            onTrade={this.loadBlockchainData}
+                            oracles={this.state.oracles}
+                            symbol={this.state.activeSymbol}
+                            positions={this.state.positions.filter((el) => ( el.state() === "pending" || el.state() === "waiting for oracle" || el.state() === "claim" ))} />
+                      }
+                    </div>
+                    <div role="tabpanel" className={this.state.ui.currentTab === "isClosed" ? "tab-pane active" : "tab-pane"}>
+                      {
+                        this.state.positions === undefined
+                        ? <h1>Loading...</h1>
+                        : <Positions
+                            onTrade={this.loadBlockchainData}
+                            oracles={this.state.oracles}
+                            symbol={this.state.activeSymbol}
+                            positions={this.state.positions.filter((el) => ( el.state() === "closed" ))} />
+                      }
+                    </div>
                   </div>
                 </div>
               </div>

@@ -52,7 +52,7 @@ class CreateOrder extends React.Component {
     };
 
     return (
-      <div className="panel panel-default">
+      <div className="panel panel-primary">
         <div className="panel-heading">Create Order for <strong>{this.props.symbol.symbol}</strong></div>
         <div className="panel-body">
           <form className="form">
