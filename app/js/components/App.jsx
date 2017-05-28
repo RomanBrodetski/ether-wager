@@ -25,12 +25,16 @@ class App extends React.Component {
   }
 
   switchTabs(event) {
+    event.preventDefault();
+
     this.setState({
       ui: Object.assign(this.state.ui, { currentTab: event.target.name })
     })
   }
 
   toggle(event) {
+    event.preventDefault();
+    
     this.setState({
       ui: Object.assign(this.state.ui, { myPositionsOpen: !this.state.ui.myPositionsOpen })
     })
@@ -154,10 +158,10 @@ class App extends React.Component {
 
                   <div className={this.state.ui.myPositionsOpen ? "panel-body" : "hidden panel-body"}>
                     <ul className="nav nav-tabs" role="tablist">
-                      <li role="presentation" className={this.state.ui.currentTab === "allPositions" ? "active" : ""}><a href="#" name="allPositions" onClick={this.switchTabs}>All my positions</a></li>
-                      <li role="presentation" className={this.state.ui.currentTab === "isActive" ? "active" : ""}><a href="#" name="isActive" onClick={this.switchTabs}>Active positions</a></li>
-                      <li role="presentation" className={this.state.ui.currentTab === "needsAttention" ? "active" : ""}><a href="#" name="needsAttention" onClick={this.switchTabs}>Waiting for action</a></li>
-                      <li role="presentation" className={this.state.ui.currentTab === "isClosed" ? "active" : ""}><a href="#" name="isClosed" onClick={this.switchTabs}>Closed</a></li>
+                      <li role="presentation" className={this.state.ui.currentTab === "allPositions" ? "active" : ""}><a href="" name="allPositions" onClick={this.switchTabs}>All my positions</a></li>
+                      <li role="presentation" className={this.state.ui.currentTab === "isActive" ? "active" : ""}><a href="" name="isActive" onClick={this.switchTabs}>Active positions</a></li>
+                      <li role="presentation" className={this.state.ui.currentTab === "needsAttention" ? "active" : ""}><a href="" name="needsAttention" onClick={this.switchTabs}>Waiting for action</a></li>
+                      <li role="presentation" className={this.state.ui.currentTab === "isClosed" ? "active" : ""}><a href="" name="isClosed" onClick={this.switchTabs}>Closed</a></li>
                     </ul>
 
                     <div>

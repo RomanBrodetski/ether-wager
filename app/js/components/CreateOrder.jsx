@@ -28,6 +28,8 @@ class CreateOrder extends React.Component {
   }
 
   handleInputChange(event) {
+    event.preventDefault();
+
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     const name = event.target.name;
 
