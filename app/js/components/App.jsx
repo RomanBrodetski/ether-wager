@@ -200,7 +200,6 @@ class App extends React.Component {
                                     positions={Object.values(this.state.positions).filter((el) => ( el.state() === "closed" ))} />
                                 }
                             </div>
->>>>>>> Render all the tabpanels
                           </div>
                       }
                     </div>

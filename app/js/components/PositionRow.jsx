@@ -66,12 +66,16 @@ class PositionRow extends React.Component {
         <a className="btn btn-success btn-sm" href="#" onClick={(e) => this.claim(e)}>claim</a>
       )
     } else {
-      return this.props.position.expiration
+      let date = new Date(this.props.position.expiration * 1000);
+      let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+
+      return date.toLocaleDateString('de-DE', options);
     }
   }
 
   render() {
     // className={this.props.position.state() === "closed" ? "" : (this.props.position.PNL(this.oraclePrice()) > 0 ? "success" : "danger")}
+
     return (
       <tr>
         <td>{this.props.position.state()}</td>
