@@ -22,16 +22,18 @@ class Position {
     this.expirationPrice = this.expirationPriceCents / 100
     this.collateralETH = this.collateral / Math.pow(10, 18)
     this.oracleComissionETH = this.oracleComission / Math.pow(10, 18)
+    this.canExecute = !this.executed && !this.oracleRequested && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
+    this.state = this.computeState();
   }
 
   isNull() {
     return this.symbol == ""
   }
 
-  state() {
-    return (!this.executed && !this.canExecute() && !this.oracleRequested && "active") ||
-           (!this.executed && !this.canExecute() && "waiting for oracle") ||
-            (!this.executed && this.canExecute() && "pending") ||
+  computeState() {
+    return (!this.executed && !this.canExecute && !this.oracleRequested && "active") ||
+           (!this.executed && !this.canExecute && "waiting for oracle") ||
+            (!this.executed && this.canExecute && "pending") ||
                (this.executed && this.canClaim() && "claim") || "closed"
   }
 
@@ -43,7 +45,7 @@ class Position {
   }
 
   canExecute() {
-    return !this.executed && !this.oracleRequested && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
+    return
   }
 
   canClaim() {

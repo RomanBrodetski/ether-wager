@@ -74,7 +74,7 @@ class CreateOrder extends React.Component {
       this.props.symbol.oracle,
       this.state.long,
       this.state.spot,
-      this.state.premium,
+      this.state.premium - 100, // Absolute percentage to relative
       this.state.limit,
       this.state.leverage,
       timestamp
@@ -99,8 +99,7 @@ class CreateOrder extends React.Component {
       whiteSpace: "nowrap"
     };
     let today = new Date();
-    console.log("Rendering!");
-    console.log("state! " + this.state.leverage);
+
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">Create Order for <strong>{this.props.symbol.symbol}</strong></div>
@@ -143,28 +142,11 @@ class CreateOrder extends React.Component {
                     <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="spot" checked={this.state.spot} /> Spot Price
                   </label>
                 </div>
-                {/*
-                <form class="form-inline">
-                  <div class="form-group">
-                    <label class="sr-only">Email</label>
-                    <p class="form-control-static">email@example.com</p>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword2" class="sr-only">Password</label>
-                    <input type="password" class="form-control" id="inputPassword2" placeholder="Password">
-                  </div>
-                  <button type="submit" class="btn btn-default">Confirm identity</button>
-                </form> */}
                 {this.state.spot
-                  ? <div className="form-inline form-group">
-                      <div className="form-group">
-                        <label style={{paddingRight:'10px',fontSize:'16px',marginBottom:'0'}}>Spot Price </label>
-                      </div>
-                      <div className="form-group">
-                        <div className="input-group">
-                          <input onChange={this.handleInputChange} type="number" className="form-control" name="premium" placeholder="+/- price" value={this.state.premium} step="1"/>
-                          <span className="input-group-addon"><i className="fa fa-percent" aria-hidden="true"></i></span>
-                        </div>
+                  ? <div className="form-group">
+                      <div className="input-group">
+                        <input onChange={this.handleInputChange} type="number" className="form-control" name="premium" placeholder="Percentage of spot price" value={this.state.premium} step="1" min="90" max="110"/>
+                        <span className="input-group-addon"><i className="fa fa-percent" aria-hidden="true"></i></span>
                       </div>
                     </div>
                   : <div className="form-group">

@@ -38,9 +38,9 @@ class SelectSymbol extends React.Component {
       <ul className="nav nav-pills nav-stacked">
         {Object.values(this.props.symbols).map((symbolObj) => (
           <li key={symbolObj.symbol} className={this.props.activeSymbol == symbolObj.symbol ? "active" : ""}>
-            <a href="#" onClick={(e) => this.props.changeSymbol(e, symbolObj.symbol)}>
+            <a href="" onClick={(e) => this.props.changeSymbol(e, symbolObj.symbol)}>
               {symbolObj.symbol}
-              {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "badge", "total orders")}
+              {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "badge badgeGrey", "total orders")}
               {this.spanIfPresent(this.long(symbolObj.symbol), "badge badgeGreen", "my long orders and positions")}
               {this.spanIfPresent(this.short(symbolObj.symbol), "badge badgeOrange", "my short orders and positions")}
             </a>

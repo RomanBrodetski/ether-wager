@@ -27,7 +27,7 @@ class Positions extends React.Component {
                 </tr>
               </thead>
               <tbody>
-                {_(this.props.positions).sortBy((p) => p.state()).map((position) => (
+                {this.props.positions.map((position) => (
                   <PositionRow onTrade={this.props.onTrade} key={position.id} position={position} oracle={this.props.oracles[position.symbol]}/>
                 ))}
               </tbody>

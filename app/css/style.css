@@ -26,21 +26,34 @@ body #root {
 .nav-pills a > .badgeGreen {
   background: #5cb85c;
 }*/
+.badgeGrey {
+  border: 1px solid #bbbbbb;
+  background: #ffffff;
+  color: #212121;
+}
 
 .badgeOrange {
   border: 1px solid #ff9800;
+  background: #ffffff;
+  color: #212121;
 }
 
 .badgeRed {
   border: 1px solid #e51c23;
+  background: #ffffff;
+  color: #212121;
 }
 
 .badgePink {
   border: 1px solid #9c27b0;
+  background: #ffffff;
+  color: #212121;
 }
 
 .badgeGreen {
   border: 1px solid #5cb85c;
+  background: #ffffff;
+  color: #212121;
 }
 
 .table.table-hover>thead>tr>th,

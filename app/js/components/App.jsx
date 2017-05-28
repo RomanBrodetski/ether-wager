@@ -171,21 +171,21 @@ class App extends React.Component {
                                 onTrade={this.loadBlockchainData}
                                 oracles={this.state.oracles}
                                 symbol={this.state.activeSymbol}
-                                positions={Object.values(this.state.positions).filter((el) => ( el.state() === "active" ))} />
+                                positions={Object.values(this.state.positions).filter((el) => ( el.state === "active" ))} />
                             </div>
                             <div role="tabpanel" className={this.state.currentTab === "needsAttention" ? "tab-pane active" : "tab-pane"}>
                               <Positions
                                 onTrade={this.loadBlockchainData}
                                 oracles={this.state.oracles}
                                 symbol={this.state.activeSymbol}
-                                positions={Object.values(this.state.positions).filter((el) => ( el.state() === "pending" || el.state() === "waiting for oracle" || el.state() === "claim" ))} />
+                                positions={Object.values(this.state.positions).filter((el) => ( el.state === "pending" || el.state === "waiting for oracle" || el.state === "claim" ))} />
                             </div>
                             <div role="tabpanel" className={this.state.currentTab === "isClosed" ? "tab-pane active" : "tab-pane"}>
                               <Positions
                                 onTrade={this.loadBlockchainData}
                                 oracles={this.state.oracles}
                                 symbol={this.state.activeSymbol}
-                                positions={Object.values(this.state.positions).filter((el) => ( el.state() === "closed" ))} />
+                                positions={Object.values(this.state.positions).filter((el) => ( el.state === "closed" ))} />
                             </div>
                           </div>
                       }

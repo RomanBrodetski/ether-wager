@@ -15,7 +15,7 @@ class PositionRow extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.position.state() != this.props.position.state()) {
+    if (newProps.position.state != this.props.position.state) {
       this.setState({
         loading: false
       })
@@ -57,7 +57,7 @@ class PositionRow extends React.Component {
       return (
         <span className="loader">loading</span>
       )
-    } else if (this.props.position.canExecute()) {
+    } else if (this.props.position.canExecute) {
       return (
         <a className="btn btn-warning btn-sm" href="#" onClick={(e) => this.execute(e)}>exercise</a>
       )
@@ -74,11 +74,11 @@ class PositionRow extends React.Component {
   }
 
   render() {
-    // className={this.props.position.state() === "closed" ? "" : (this.props.position.PNL(this.oraclePrice()) > 0 ? "success" : "danger")}
+    // className={this.props.position.state === "closed" ? "" : (this.props.position.PNL(this.oraclePrice()) > 0 ? "success" : "danger")}
 
     return (
       <tr>
-        <td>{this.props.position.state()}</td>
+        <td>{this.props.position.state}</td>
         <td><span className={"label label-" + (this.props.position.long ? "success" : "danger")}>{this.props.position.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.position.symbol}</td>
         <td>{this.props.position.price}</td>
