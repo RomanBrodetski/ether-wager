@@ -14,7 +14,8 @@ class CreateOrder extends React.Component {
       isLoading: false,
       status: "none",
       spot: true,
-      premium: ""
+      premium: "",
+      leverage: 1
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -77,6 +78,7 @@ class CreateOrder extends React.Component {
       this.state.spot,
       this.state.premium,
       this.state.limit,
+      this.state.leverage
       timestamp
     ).then(
       () => this.setState({
@@ -135,18 +137,13 @@ class CreateOrder extends React.Component {
                   </label>
                 </div>
                 <div className="form-group">
-                  <label>Strike Price</label>
-                  <div className="input-group">
-                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="1"/>
-                    <span className="input-group-addon">$</span>
-                  <div>
-                    <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="fixed" checked={!this.state.spot}  /> Fixed Price
-                    </label>
-                    <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="spot" checked={this.state.spot} /> Spot Price
-                    </label>
-                  </div>
+                  <label className="radio-inline">
+                    <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="fixed" checked={!this.state.spot}  /> Fixed Price
+                  </label>
+                  <label className="radio-inline">
+                    <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="spot" checked={this.state.spot} /> Spot Price
+                  </label>
+                </div>
                   {(this.state.spot) ? (
                       <div> Spot Price +
                         <div className="input-group">
@@ -160,7 +157,25 @@ class CreateOrder extends React.Component {
                         <span className="input-group-addon">$</span>
                       </div>
                   )}
-                </div>
+                <div className="radio">
+                  <label>Leverage</label>
+                  <div className="input-group">
+                    <label className="radio-inline">
+                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="1" checked={this.state.leverage == 1} /> 1x
+                    </label>
+                    <label className="radio-inline">
+                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="2" checked={this.state.leverage == 2} /> 2x
+                    </label>
+                    <label className="radio-inline">
+                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="3" checked={this.state.leverage == 3} /> 3x
+                    </label>
+                    <label className="radio-inline">
+                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="5" checked={this.state.leverage == 5} /> 5x
+                    </label>
+                    <label className="radio-inline">
+                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="10" checked={this.state.leverage == 10} /> 10x
+                    </label>
+                  </div>
                 </div>
                 <div className="form-group">
                   <label>Expiration</label>
@@ -168,7 +183,7 @@ class CreateOrder extends React.Component {
                     <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="datetime-local" className="form-control" name="date" placeholder="Set your date" value={this.state.date} />
                   </div>
                 </div>
-                <button onClick={this.createOrder} disabled={!this.state.isLoading && this.state.collateral.length && this.state.limit.length && this.state.date.length ? false : true} className="btn btn-success" type="button">
+                <button onClick={this.createOrder} disabled={!this.state.isLoading && this.state.collateral.length && (this.state.limit.length && !this.state.spot || this.state.premium && this.state.spot) && this.state.date.length ? false : true} className="btn btn-success" type="button">
                   <span>Create Order </span>
                   {this.state.isLoading && <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>}
                 </button>

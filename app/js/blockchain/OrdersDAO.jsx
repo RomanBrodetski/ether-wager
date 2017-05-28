@@ -16,7 +16,7 @@ class OrdersDAO {
     return CfdMarket.orders(id).then(order => new Order(order, id))
   }
 
-  static createOrder(collateral, symbol, oracle, long, spot, premium, priceLimit, timestampLimit) {
+  static createOrder(collateral, symbol, oracle, long, spot, premium, priceLimit, timestampLimit, leverage) {
 
     return CfdMarket.createOrder(
         symbol,
