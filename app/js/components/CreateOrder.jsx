@@ -10,18 +10,21 @@ class CreateOrder extends React.Component {
       collateral: "",
       long: true,
       date: defaultDate.toISOString().slice(0, -8),
-      limit: ""
+      limit: "",
+      isLoading: false,
+      status: "none"
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleDirectionChange = this.handleDirectionChange.bind(this);
     this.createOrder = this.createOrder.bind(this);
-    // this.nextWeek = this.nextWeek.bind(this);
+    this.handleInputFocus = this.handleInputFocus.bind(this);
   }
 
-  nextWeek(today) {
-    nextweek = new Date(today.getFullYear(), today.getMonth(), today.getDate()+7);
-    return nextweek;
+  handleInputFocus() {
+    this.setState({
+      status: "none"
+    });
   }
 
   handleInputChange(event) {
@@ -51,6 +54,10 @@ class CreateOrder extends React.Component {
   createOrder() {
     const timestamp = (new Date(this.state.date).getTime())/1000;
 
+    this.setState({
+      isLoading: true
+    });
+
     OrdersDAO.createOrder(
       this.state.collateral,
       this.props.symbol.symbol,
@@ -58,7 +65,18 @@ class CreateOrder extends React.Component {
       this.state.long,
       this.state.limit,
       timestamp
-    ).then(this.props.onTrade)
+    ).then(
+      () => this.setState({
+        isLoading: false,
+        collateral: "",
+        limit: "",
+        status: "success"
+      }),
+      () => this.setState({
+        isLoading: false,
+        status: "fail"
+      })
+    );
   }
 
   render() {
@@ -67,7 +85,6 @@ class CreateOrder extends React.Component {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap"
     };
-
     let today = new Date();
 
     return (
@@ -92,32 +109,37 @@ class CreateOrder extends React.Component {
                 <div className="form-group">
                   <label>Collateral</label>
                   <div className="input-group">
-                    <input onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} min="0.01" step="0.01"/>
+                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} min="0.01" step="0.01"/>
                     <span className="input-group-addon">ETH</span>
                   </div>
                 </div>
                 <div className="radio">
                   <label className="radio-inline">
-                    <input onChange={this.handleDirectionChange} type="radio" name="direction" value="long" checked={this.state.long} /> long
+                    <input onFocus={this.handleInputFocus} onChange={this.handleDirectionChange} type="radio" name="direction" value="long" checked={this.state.long} /> long
                   </label>
                   <label className="radio-inline">
-                    <input onChange={this.handleDirectionChange} type="radio" name="direction" value="short" checked={!this.state.long} /> short
+                    <input onFocus={this.handleInputFocus} onChange={this.handleDirectionChange} type="radio" name="direction" value="short" checked={!this.state.long} /> short
                   </label>
                 </div>
                 <div className="form-group">
                   <label>Strike Price</label>
                   <div className="input-group">
-                    <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="1"/>
+                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="1"/>
                     <span className="input-group-addon">$</span>
                   </div>
                 </div>
                 <div className="form-group">
                   <label>Expiration</label>
                   <div className="input-group">
-                    <input onChange={this.handleInputChange} type="datetime-local" className="form-control" name="date" placeholder="Timestamp" value={this.state.date} />
+                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="datetime-local" className="form-control" name="date" placeholder="Set your date" value={this.state.date} />
                   </div>
                 </div>
-                <button type="button" onClick={this.createOrder} className="btn btn-success">Create Order</button>
+                <button onClick={this.createOrder} disabled={!this.state.isLoading && this.state.collateral.length && this.state.limit.length && this.state.date.length ? false : true} className="btn btn-success" type="button">
+                  <span>Create Order </span>
+                  {this.state.isLoading && <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>}
+                </button>
+                {this.state.status === "fail" && <p><i className="glyphicon glyphicon-remove text-danger"></i> the order was not created</p>}
+                {this.state.status === "success" && <p><i className="glyphicon glyphicon-ok text-success"></i> the order is successfully created</p>}
               </div>
             </div>
           </form>
