@@ -11,12 +11,13 @@ class OrderBook extends React.Component {
     return (
       <div>
         {this.props.orders.length === 0
-          ? <p className="text-primary">There are no orders yet.</p>
+          ? <p className="text-primary">There are no orders yet</p>
           : <table className="table table-hover">
               <thead>
                 <tr>
                   <th>Type <Tooltip title="Tooltip text" /></th>
                   <th>Collateral ETH <Tooltip title="Tooltip text" /></th>
+                  <th>Leverage</th>
                   <th>Strike Price <Tooltip title="Tooltip text" /></th>
                   <th>Expires <Tooltip title="Tooltip text" /></th>
                   <th></th>

@@ -100,6 +100,8 @@ class CreateOrder extends React.Component {
     };
     let today = new Date();
 
+    console.log("rerender")
+
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">Create Order for <strong>{this.props.symbol.symbol}</strong></div>

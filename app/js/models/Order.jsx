@@ -5,12 +5,13 @@ class Order {
     this.oracle = blockchainOrder[1].toString()
     this.long = blockchainOrder[2]
     this.collateral = blockchainOrder[3].toNumber()
-    this.spot = blockchainOrder[4]
-    this.premiumBp = blockchainOrder[5].toNumber() / 100
-    this.oracleRequested = blockchainOrder[6]
-    this.limitCents = blockchainOrder[7].toNumber()
-    this.timestampLimit = blockchainOrder[8].toNumber()
-    this.owner = blockchainOrder[9].toString()
+    this.leverage = blockchainOrder[4].toNumber()
+    this.spot = blockchainOrder[5]
+    this.premiumBp = blockchainOrder[6].toNumber() / 100
+    this.oracleRequested = blockchainOrder[7]
+    this.limitCents = blockchainOrder[8].toNumber()
+    this.timestampLimit = blockchainOrder[9].toNumber()
+    this.owner = blockchainOrder[10].toString()
 
     this.limit = this.limitCents / 100
   }

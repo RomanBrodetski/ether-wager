@@ -22,6 +22,7 @@ class OrdersDAO {
         symbol,
         Oracles.toBlockchain(oracle),
         long,
+        leverage,
         spot,
         spot ? premium * 100 : 0, //percentages -> basis points
         spot ? 0 : priceLimit * 100, //dollars -> cents

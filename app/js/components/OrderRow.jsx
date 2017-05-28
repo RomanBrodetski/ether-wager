@@ -44,7 +44,7 @@ class OrderRow extends React.Component {
     this.setState({
       loading: true
     });
-    
+
     OrdersDAO
       .cancel(this.props.order.id)
       .then(
@@ -103,6 +103,7 @@ class OrderRow extends React.Component {
       <tr>
         <td><span  className={"label label-" + (this.props.order.long ? "success" : "warning")}> {this.props.order.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
+        <td>{this.props.order.leverage}x</td>
         <td>{this.props.order.spot ? (
             this.props.oracle.price.toString() + (this.props.order.premiumBp > 0 ? " + " : " - ") + Math.abs(this.props.order.premiumBp) + "% = " + MathUtils.round(this.props.oracle.price * (1 + this.props.order.premiumBp / 100), 2).toString()
           ) : (

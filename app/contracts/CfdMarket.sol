@@ -14,26 +14,32 @@ contract CfdMarket is OrdersManager {
         uint oracleComission; // only set for orders
     }
 
-    struct Position {
-        string symbol;
-        Oracles oracle;
-        address short;
-        address long;
-        uint expiration; // timestamp
-        uint priceCents; // strike price
-        uint collateral; // each party's collateral
-
-        bool executed; //7
-        bool oracleRequested;
-        uint oracleComission; // price paid for the oracle
+    struct Exercise {
         uint expirationPriceCents; // price returned by the oracle
         uint longClaim; // wei won by the longing party
         uint shortClaim; // wei won by the shorting party
     }
 
+    struct Position {
+        string symbol;
+        Oracles oracle;
+        address short;
+        address long;
+        uint expirationTime;
+        uint priceCents; // strike price
+        uint collateral; // each party's collateral
+        uint8 leverage;
+
+        bool executed; //8
+        bool oracleRequested;
+        uint oracleComission; // price paid for the oracle
+    }
+
     uint public lastPositionId;
 
     mapping (uint => Position) public positions;
+
+    mapping (uint => Exercise) public exersises; // uses the same id as positions
 
     mapping(bytes32 => OracleRequest) public oracleRequests;
 
@@ -59,19 +65,21 @@ contract CfdMarket is OrdersManager {
 
     function claim(uint positionId) {
         Position pos = positions[positionId];
+        Exercise ex  = exersises[positionId];
 
         if (!pos.executed) throw;
-        if (pos.longClaim > 0 && msg.sender == pos.long) {
-            if (!pos.long.send(pos.longClaim)) throw;
-            pos.longClaim = 0;
-        } else if (pos.shortClaim > 0 && msg.sender == pos.long) {
-            if (!pos.short.send(pos.shortClaim)) throw;
-            pos.shortClaim = 0;
+        if (ex.longClaim > 0 && msg.sender == pos.long) {
+            if (!pos.long.send(ex.longClaim)) throw;
+            ex.longClaim = 0;
+        } else if (ex.shortClaim > 0 && msg.sender == pos.long) {
+            if (!pos.short.send(ex.shortClaim)) throw;
+            ex.shortClaim = 0;
         } else throw;
 
         UpdatePosition(positionId);
 
         positions[positionId] = pos;
+        exersises[positionId] = ex;
     }
 
     function __callback(bytes32 myId, string res) {
@@ -85,20 +93,19 @@ contract CfdMarket is OrdersManager {
             Position pos = positions[request.id];
             uint currentPriceCents = parseInt(res, 2);
 
-            pos.expirationPriceCents = currentPriceCents;
             pos.executed = true;
 
             uint baseCollateral = 2 * pos.collateral - pos.oracleComission;
             assert(currentPriceCents == 0 || baseCollateral * currentPriceCents / currentPriceCents == baseCollateral);
 
-            pos.longClaim = min(baseCollateral / 2 * currentPriceCents / pos.priceCents, baseCollateral);
-            pos.shortClaim = baseCollateral - pos.longClaim;
+            uint longClaim = min(baseCollateral / 2 * currentPriceCents / pos.priceCents, baseCollateral);
 
-            assert(pos.longClaim + pos.shortClaim + pos.oracleComission == pos.collateral * 2);
+            Exercise memory ex = Exercise(currentPriceCents, longClaim, baseCollateral - longClaim);
+            assert(ex.longClaim + ex.shortClaim + pos.oracleComission == pos.collateral * 2);
 
             UpdatePosition(request.id);
-
             positions[request.id] = pos;
+            exersises[request.id] = ex;
         } else {
             Order order = orders[request.id];
             int price = int(parseInt(res, 2));
@@ -109,7 +116,7 @@ contract CfdMarket is OrdersManager {
 
     function execute(uint positionId) {
         Position pos = positions[positionId];
-        assert(block.timestamp > pos.expiration);
+        assert(block.timestamp > pos.expirationTime);
         assert(!pos.oracleRequested);
 
         pos.oracleRequested = true;
@@ -132,13 +139,11 @@ contract CfdMarket is OrdersManager {
             order.expiration,
             price,
             order.collateral,
+            order.leverage,
 
             false,
             false,
-            oracleComission,
-            0,
-            0,
-            0
+            oracleComission
         );
 
         uint positionId = nextPositionId();

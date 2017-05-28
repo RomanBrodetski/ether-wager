@@ -16,6 +16,7 @@ function createSampleFixedOrder(callback) {
         "AAPL",
         0,
         true,
+        1,
         false,
         0,
         10000,
@@ -33,6 +34,7 @@ function createSamlpePosition(callback) {
   getAccount(4, function(anotherAccount) {
     createSampleFixedOrder(function(orderId) {
       TestableCfdMarket.trade(orderId, {value: Math.pow(10, 18), from: anotherAccount, gas: 500000}, function(e, r) {
+        assert.equal(e, null);
         TestableCfdMarket.lastPositionId(function(e, pId) {
           assert.equal(e, null);
           callback(anotherAccount, pId.toNumber(), orderId)
@@ -60,9 +62,9 @@ describe("TestableCfdMarket", function() {
         assert.equal(result[1].toNumber(), 0);
         assert.equal(result[2], true);
         assert.equal(result[3].toNumber(), Math.pow(10, 18));
-        assert.equal(result[7].toNumber(), 10000);
-        assert.equal(result[8].toNumber(), 0);
-        assert.equal(result[9], web3.eth.defaultAccount);
+        assert.equal(result[8].toNumber(), 10000);
+        assert.equal(result[9].toNumber(), 0);
+        assert.equal(result[10], web3.eth.defaultAccount);
         done()
       });
     });
@@ -131,7 +133,7 @@ describe("TestableCfdMarket", function() {
   it("open position should be saved in positions array", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.positions(pId, function(e, pos) {
-        assert.equal(e == null)
+        assert.equal(e, null)
         assert.equal(pos[0].toString(), "AAPL");
         assert.equal(pos[2], otherAcc);
         assert.equal(pos[3], web3.eth.defaultAccount);
@@ -144,10 +146,10 @@ describe("TestableCfdMarket", function() {
   it("open position can be executed", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        assert.equal(e == null)
+        assert.equal(e, null)
         TestableCfdMarket.positions(pId, function(e, pos) {
-          assert.equal(pos[8], true);
-          assert.equal(pos[9].toNumber(), 10000);
+          assert.equal(pos[9], true);
+          assert.equal(pos[10].toNumber(), 10000);
           done()
         });
       });
@@ -157,7 +159,7 @@ describe("TestableCfdMarket", function() {
   it("position that is waiting for oracle response cannot be executed again", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        assert.equal(e == null)
+        assert.equal(e, null)
         TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
           assert.notEqual(e, null);
           done();
@@ -169,12 +171,14 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got higher", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x1, "120", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x0, "120", {gas: 500000}, function(e, r) {
+          assert.equal(e, null)
           TestableCfdMarket.positions(pId, function(e, pos) {
+            assert.equal(e, null)
             assert.equal(pos[7], true);
-            assert.equal(pos[10].toNumber(), 12000);
-            assert.equal(pos[11].toString(), "1199999999999994000");
-            assert.equal(pos[12].toString(), "799999999999996000");
+            assert.equal(pos[11].toNumber(), 12000);
+            assert.equal(pos[12].toString(), "1199999999999994000");
+            assert.equal(pos[13].toString(), "799999999999996000");
             done();
           });
         });
@@ -185,12 +189,12 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got lower", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x1, "55.0", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x0, "55.0", {gas: 500000}, function(e, r) {
           TestableCfdMarket.positions(pId, function(e, pos) {
             assert.equal(pos[7], true);
-            assert.equal(pos[10].toNumber(), 5500);
-            assert.equal(pos[11].toString(), "549999999999997250");
-            assert.equal(pos[12].toString(), "1449999999999992750");
+            assert.equal(pos[11].toNumber(), 5500);
+            assert.equal(pos[12].toString(), "549999999999997250");
+            assert.equal(pos[13].toString(), "1449999999999992750");
             done();
           });
         });
@@ -201,12 +205,12 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got over the roof", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x1, "550.00", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x0, "550.00", {gas: 500000}, function(e, r) {
           TestableCfdMarket.positions(pId, function(e, pos) {
             assert.equal(pos[7], true);
-            assert.equal(pos[10].toNumber(), 55000);
-            assert.equal(pos[11].toString(), "1999999999999990000");
-            assert.equal(pos[12].toString(), "0");
+            assert.equal(pos[11].toNumber(), 55000);
+            assert.equal(pos[12].toString(), "1999999999999990000");
+            assert.equal(pos[13].toString(), "0");
             done();
           });
         });
@@ -217,12 +221,12 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got to zero", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x1, "0", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x0, "0", {gas: 500000}, function(e, r) {
           TestableCfdMarket.positions(pId, function(e, pos) {
             assert.equal(pos[7], true);
-            assert.equal(pos[10].toNumber(), 0);
-            assert.equal(pos[11].toString(), "0");
-            assert.equal(pos[12].toString(), "1999999999999990000");
+            assert.equal(pos[11].toNumber(), 0);
+            assert.equal(pos[12].toString(), "0");
+            assert.equal(pos[13].toString(), "1999999999999990000");
             done();
           });
         });

@@ -1,5 +1,5 @@
 class Position {
-  constructor(blockchainPosition, id) {
+  constructor(blockchainPosition, id, blockchainEx) {
     this.id = id
     this.symbol = blockchainPosition[0].toString()
     this.oracle = blockchainPosition[1].toString()
@@ -8,13 +8,14 @@ class Position {
     this.expiration = blockchainPosition[4].toNumber()
     this.priceCents = blockchainPosition[5].toNumber()
     this.collateral = blockchainPosition[6].toString()
+    this.leverage = blockchainPosition[7].toNumber()
 
-    this.executed = blockchainPosition[7]
-    this.oracleRequested = blockchainPosition[8]
-    this.oracleComission = blockchainPosition[9].toNumber()
-    this.expirationPriceCents = blockchainPosition[10].toNumber()
-    this.longClaim = blockchainPosition[11].toNumber()
-    this.shortClaim = blockchainPosition[12].toNumber()
+    this.executed = blockchainPosition[8]
+    this.oracleRequested = blockchainPosition[9]
+    this.oracleComission = blockchainPosition[10].toNumber()
+    this.expirationPriceCents = blockchainEx[0].toNumber()
+    this.longClaim = blockchainEx[1].toNumber()
+    this.shortClaim = blockchainEx[2].toNumber()
 
     this.own = this.longAddress == web3.eth.defaultAccount || this.shortAddress == web3.eth.defaultAccount
     this.long = this.own && this.longAddress == web3.eth.defaultAccount

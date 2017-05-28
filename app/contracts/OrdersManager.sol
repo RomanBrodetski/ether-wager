@@ -16,6 +16,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         Oracles oracle;
         bool    long;
         uint    collateral;
+        uint8   leverage;
         bool    spot; // price is pegged to the oracle value
         int     premiumBp; // price premium to the spot price in basis points (10000bp == 100%)
         bool    oracleRequested;
@@ -32,17 +33,18 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         string symbol,
         Oracles oracle,
         bool   long,
-        bool   spot,
+        uint8  leverage,
         int    premiumBp,
         uint   strikeCents,
         uint   expiration
     ) payable returns (uint) {
-        assert(strikeCents == 0 && spot || strikeCents > 0 && !spot);
+        assert(strikeCents == 0 && premiumBp != 0 || strikeCents > 0 && premiumBp == 0);
         assert(premiumBp < maxPremium && premiumBp > (- maxPremium));
         assert(strikeCents == 0 || 2 * msg.value * strikeCents / strikeCents == 2 * msg.value);
         assert(msg.value >  minCollateral);
+        assert(leverage  <=  10);
 
-        Order memory order = Order(symbol, oracle, long, msg.value, spot, premiumBp, false, strikeCents, expiration, msg.sender);
+        Order memory order = Order(symbol, oracle, long, msg.value, leverage, strikeCents == 0, premiumBp, false, strikeCents, expiration, msg.sender);
         uint id = nextOrderId();
 
         CreateOrder(id);
