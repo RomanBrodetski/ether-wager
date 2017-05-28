@@ -60,9 +60,9 @@ describe("TestableCfdMarket", function() {
         assert.equal(result[1].toNumber(), 0);
         assert.equal(result[2], true);
         assert.equal(result[3].toNumber(), Math.pow(10, 18));
-        assert.equal(result[4].toNumber(), 10000);
-        assert.equal(result[5].toNumber(), 0);
-        assert.equal(result[6], web3.eth.defaultAccount);
+        assert.equal(result[7].toNumber(), 10000);
+        assert.equal(result[8].toNumber(), 0);
+        assert.equal(result[9], web3.eth.defaultAccount);
         done()
       });
     });
@@ -131,6 +131,7 @@ describe("TestableCfdMarket", function() {
   it("open position should be saved in positions array", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.positions(pId, function(e, pos) {
+        assert.equal(e == null)
         assert.equal(pos[0].toString(), "AAPL");
         assert.equal(pos[2], otherAcc);
         assert.equal(pos[3], web3.eth.defaultAccount);
@@ -143,6 +144,7 @@ describe("TestableCfdMarket", function() {
   it("open position can be executed", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
+        assert.equal(e == null)
         TestableCfdMarket.positions(pId, function(e, pos) {
           assert.equal(pos[8], true);
           assert.equal(pos[9].toNumber(), 10000);
@@ -155,6 +157,7 @@ describe("TestableCfdMarket", function() {
   it("position that is waiting for oracle response cannot be executed again", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
+        assert.equal(e == null)
         TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
           assert.notEqual(e, null);
           done();

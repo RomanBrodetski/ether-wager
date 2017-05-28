@@ -161,19 +161,19 @@ class CreateOrder extends React.Component {
                   <label>Leverage</label>
                   <div className="input-group">
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="1" checked={this.state.leverage == 1} /> 1x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="1" checked={this.state.leverage == 1} /> 1x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="2" checked={this.state.leverage == 2} /> 2x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="2" checked={this.state.leverage == 2} /> 2x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="3" checked={this.state.leverage == 3} /> 3x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="3" checked={this.state.leverage == 3} /> 3x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="5" checked={this.state.leverage == 5} /> 5x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="5" checked={this.state.leverage == 5} /> 5x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleLeverageChange} type="radio" name="leverage" value="10" checked={this.state.leverage == 10} /> 10x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="10" checked={this.state.leverage == 10} /> 10x
                     </label>
                   </div>
                 </div>
