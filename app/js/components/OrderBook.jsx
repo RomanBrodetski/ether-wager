@@ -22,7 +22,7 @@ class OrderBook extends React.Component {
         </thead>
         <tbody>
           {this.props.orders.map((order) => (
-            <OrderRow order={order} onTrade={this.props.onTrade} key={order.id}/>
+            <OrderRow order={order} onTrade={this.props.onTrade} key={order.id} oracle={this.props.oracle}/>
           ))}
         </tbody>
       </table>

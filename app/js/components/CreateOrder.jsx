@@ -12,11 +12,14 @@ class CreateOrder extends React.Component {
       date: defaultDate.toISOString().slice(0, -8),
       limit: "",
       isLoading: false,
-      status: "none"
+      status: "none",
+      spot: true,
+      premium: ""
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleDirectionChange = this.handleDirectionChange.bind(this);
+    this.handleSpotChange = this.handleSpotChange.bind(this);
     this.createOrder = this.createOrder.bind(this);
     this.handleInputFocus = this.handleInputFocus.bind(this);
   }
@@ -38,7 +41,7 @@ class CreateOrder extends React.Component {
       let dateSet = new Date(value).getTime();
 
       this.setState({
-        date: dateSet > now ? value : this.state.date
+        date: value //> now ? value : this.state.date
       });
     } else {
       this.setState({
@@ -53,8 +56,14 @@ class CreateOrder extends React.Component {
     })
   }
 
+  handleSpotChange(event) {
+    this.setState({
+      spot: event.target.value == "spot"
+    })
+  }
+
   createOrder() {
-    const timestamp = (new Date(this.state.date).getTime())/1000;
+    const timestamp = (new Date(this.state.date).getTime()) / 1000;
 
     this.setState({
       isLoading: true
@@ -65,6 +74,8 @@ class CreateOrder extends React.Component {
       this.props.symbol.symbol,
       this.props.symbol.oracle,
       this.state.long,
+      this.state.spot,
+      this.state.premium,
       this.state.limit,
       timestamp
     ).then(
@@ -128,7 +139,27 @@ class CreateOrder extends React.Component {
                   <div className="input-group">
                     <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="1"/>
                     <span className="input-group-addon">$</span>
+                  <div>
+                    <label className="radio-inline">
+                      <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="fixed" checked={!this.state.spot}  /> Fixed Price
+                    </label>
+                    <label className="radio-inline">
+                      <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="spot" checked={this.state.spot} /> Spot Price
+                    </label>
                   </div>
+                  {(this.state.spot) ? (
+                      <div> Spot Price +
+                        <div className="input-group">
+                          <input onChange={this.handleInputChange} type="number" className="form-control" name="premium" placeholder="Spot Price Premium" value={this.state.premium} step="0.1"/>
+                          <span className="input-group-addon">%</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="input-group">
+                        <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="0.01"/>
+                        <span className="input-group-addon">$</span>
+                      </div>
+                  )}
                 </div>
                 <div className="form-group">
                   <label>Expiration</label>

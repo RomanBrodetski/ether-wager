@@ -134,13 +134,19 @@ class App extends React.Component {
           <nav className="navbar navbar-default">
             <div className="container-fluid">
               <div className="navbar-header">
-                  <a className="navbar-brand" href="#">CFD Market</a>
+                  <a className="navbar-brand" href="#">Ether Wager</a>
               </div>
-              <ul className="nav navbar-nav">
+              <ul className="nav navbar-nav pull-right">
+                <li>
+                  <a href="http://github.com/romanBrodetski/cfd.market" target="_blanc">Github</a>
+                </li>
+                <li>
+                  <a href="#" data-toggle="modal" data-target="#help">Help</a>
+                </li>
               </ul>
             </div>
           </nav>
-
+          <Help />
           <div className="container-fluid">
             <div className="row">
               <div className="col-md-12">
@@ -242,6 +248,7 @@ class App extends React.Component {
                           this.state.orders === undefined
                             ? loading
                             : <OrderBook
+                                oracle={this.state.oracles[this.state.activeSymbol] || {}}
                                 orders={Object.values(this.state.orders).filter((order) => order.symbol === this.state.activeSymbol)}
                                 onTrade={this.loadBlockchainData} />
                         }

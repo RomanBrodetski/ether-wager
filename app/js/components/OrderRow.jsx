@@ -97,7 +97,14 @@ class OrderRow extends React.Component {
       <tr>
         <td><span  className={"label label-" + (this.props.order.long ? "success" : "warning")}> {this.props.order.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
-        <td>{this.props.order.limit}</td>
+        <td>{this.props.order.spot ? (
+            this.props.oracle.price.toString() + (this.props.order.premiumBp > 0 ? " + " : " - ") + Math.abs(this.props.order.premiumBp) + "% = " + MathUtils.round(this.props.oracle.price * (1 + this.props.order.premiumBp / 100), 2).toString()
+          ) : (
+            <div>
+              {this.props.order.limit}
+              <span className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>
+            </div>
+          )}</td>
         <td>{date.toLocaleDateString('de-DE', options)}</td>
         <td>
           <input onChange={this.setAmount} onBlur={this.setAmount} className="form-control input-sm" type="number" placeholder="type your amount" style={{fontSize: '13px'}} value={this.state.positionAmount} min="0.01" max={this.props.order.collateral / Math.pow(10, 18)} step="0.01"/>

@@ -9,13 +9,18 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
 
     uint constant minCollateral = 1 finney;
 
+    int constant maxPremium = 2000;
+
     struct Order {
-        string symbol;
+        string  symbol;
         Oracles oracle;
-        bool long;
-        uint collateral;
-        uint limitCents;
-        uint expiration;
+        bool    long;
+        uint    collateral;
+        bool    spot; // price is pegged to the oracle value
+        int     premiumBp; // price premium to the spot price in basis points (10000bp == 100%)
+        bool    oracleRequested;
+        uint    strikeCents; // should only be set if spot == false
+        uint    expiration; // timestamp
         address owner;
     }
 
@@ -27,13 +32,17 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         string symbol,
         Oracles oracle,
         bool   long,
-        uint   limitCents,
+        bool   spot,
+        int    premiumBp,
+        uint   strikeCents,
         uint   expiration
     ) payable returns (uint) {
-        assert(2 * msg.value * limitCents / limitCents == 2 * msg.value);
+        assert(strikeCents == 0 && spot || strikeCents > 0 && !spot);
+        assert(premiumBp < maxPremium && premiumBp > (- maxPremium));
+        assert(strikeCents == 0 || 2 * msg.value * strikeCents / strikeCents == 2 * msg.value);
         assert(msg.value >  minCollateral);
 
-        Order memory order = Order(symbol, oracle, long, msg.value, limitCents, expiration, msg.sender);
+        Order memory order = Order(symbol, oracle, long, msg.value, spot, premiumBp, false, strikeCents, expiration, msg.sender);
         uint id = nextOrderId();
 
         CreateOrder(id);
@@ -46,8 +55,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
     function cancelOrder(uint id) {
         Order order = orders[id];
         assert(order.owner == msg.sender);
-        if (!order.owner.send(order.collateral))
-            throw;
+        assert(order.owner.send(order.collateral));
         UpdateOrder(id);
         delete orders[id];
     }

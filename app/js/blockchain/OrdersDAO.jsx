@@ -16,15 +16,17 @@ class OrdersDAO {
     return CfdMarket.orders(id).then(order => new Order(order, id))
   }
 
-  // TODO: check if gas is needed here
-  static createOrder(collateral, symbol, oracle, long, priceLimit, timestampLimit) {
+  static createOrder(collateral, symbol, oracle, long, spot, premium, priceLimit, timestampLimit) {
+
     return CfdMarket.createOrder(
         symbol,
         Oracles.toBlockchain(oracle),
         long,
-        priceLimit * 100,
+        spot,
+        spot ? premium * 100 : 0, //percentages -> basis points
+        spot ? 0 : priceLimit * 100, //dollars -> cents
         timestampLimit,
-        {value: collateral * Math.pow(10, 18), gas: 1000000}
+        {value: collateral * Math.pow(10, 18), gas: 1000000} //eth -> wei
       )
   }
 

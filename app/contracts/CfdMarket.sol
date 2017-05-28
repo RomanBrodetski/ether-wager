@@ -5,6 +5,15 @@ import "./OrdersManager.sol";
 
 contract CfdMarket is OrdersManager {
 
+    uint constant callbackGasLimit = 300000;
+
+    struct OracleRequest {
+        bool isPosition; // true -> exersising, false -> checking spot price for an order
+        uint id;
+        address countrerparty; // only set for orders
+        uint oracleComission; // only set for orders
+    }
+
     struct Position {
         string symbol;
         Oracles oracle;
@@ -26,36 +35,26 @@ contract CfdMarket is OrdersManager {
 
     mapping (uint => Position) public positions;
 
-    mapping(bytes32 => uint) public myidToPositionId;
+    mapping(bytes32 => OracleRequest) public oracleRequests;
 
-    function trade(uint orderId) payable returns (uint) {
+    function trade(uint orderId) payable  {
         Order order = orders[orderId];
         assert(msg.value == order.collateral);
+        assert(order.spot || order.strikeCents > 0);
+        assert(!order.oracleRequested);
         // assert(msg.sender != order.owner)
 
-        Position memory position = Position(
-            order.symbol,
-            order.oracle,
-            order.long ? msg.sender : order.owner,
-            order.long ? order.owner : msg.sender,
-            order.expiration,
-            order.limitCents,
-            order.collateral,
-
-            false,
-            false,
-            0,
-            0,
-            0,
-            0
-        );
-
-        uint positionId = nextPositionId();
-        positions[positionId] = position;
-        UpdateOrder(orderId);
-        UpdatePosition(positionId);
-        delete orders[orderId];
-        return positionId;
+        if (order.spot) { //price is pegged to the oracle value
+            uint oracleComission = oraclize_getPrice("URL", callbackGasLimit);
+            assert(oracleComission < order.collateral);
+            order.oracleRequested = true;
+            bytes32 myId = oraclize_query("URL", buildOracleUrl(order.symbol, order.oracle), callbackGasLimit);
+            UpdateOrder(orderId);
+            orders[orderId] = order;
+            oracleRequests[myId] = OracleRequest(false, orderId, msg.sender, oracleComission);
+        } else { //price is fixed
+            createPositionFromOrder(orderId, order, msg.sender, order.strikeCents, 0);
+        }
     }
 
     function claim(uint positionId) {
@@ -78,31 +77,34 @@ contract CfdMarket is OrdersManager {
     function __callback(bytes32 myId, string res) {
         assert(msg.sender == oraclize_cbAddress());
 
-        uint positionId = myidToPositionId[myId];
-        delete myidToPositionId[myId];
+        OracleRequest memory request = oracleRequests[myId];
+        assert(request.id > 0);
+        delete oracleRequests[myId];
+        if (request.isPosition) {
 
-        if (positionId == 0) throw;
+            Position pos = positions[request.id];
+            uint currentPriceCents = parseInt(res, 2);
 
-        Position pos = positions[positionId];
-        uint currentPriceCents = parseInt(res, 2);
+            pos.expirationPriceCents = currentPriceCents;
+            pos.executed = true;
 
-        pos.expirationPriceCents = currentPriceCents;
-        pos.executed = true;
+            uint baseCollateral = 2 * pos.collateral - pos.oracleComission;
+            assert(currentPriceCents == 0 || baseCollateral * currentPriceCents / currentPriceCents == baseCollateral);
 
+            pos.longClaim = min(baseCollateral / 2 * currentPriceCents / pos.priceCents, baseCollateral);
+            pos.shortClaim = baseCollateral - pos.longClaim;
 
-        uint baseCollateral = 2 * pos.collateral - pos.oracleComission;
-        assert(currentPriceCents == 0 || baseCollateral * currentPriceCents / currentPriceCents == baseCollateral);
+            assert(pos.longClaim + pos.shortClaim + pos.oracleComission == pos.collateral * 2);
 
-        pos.longClaim = min(baseCollateral / 2 * currentPriceCents / pos.priceCents, baseCollateral);
-        pos.shortClaim = baseCollateral - pos.longClaim;
+            UpdatePosition(request.id);
 
-        if (pos.longClaim + pos.shortClaim + pos.oracleComission != pos.collateral * 2)
-            throw;
-
-        OracleRespond(positionId);
-        UpdatePosition(positionId);
-
-        positions[positionId] = pos;
+            positions[request.id] = pos;
+        } else {
+            Order order = orders[request.id];
+            int price = int(parseInt(res, 2));
+            uint strikeCents = uint(price + price * order.premiumBp / 10000);
+            createPositionFromOrder(request.id, order, request.countrerparty, strikeCents, request.oracleComission);
+        }
     }
 
     function execute(uint positionId) {
@@ -111,15 +113,39 @@ contract CfdMarket is OrdersManager {
         assert(!pos.oracleRequested);
 
         pos.oracleRequested = true;
-        pos.oracleComission = oraclize_getPrice("URL");
+        pos.oracleComission += oraclize_getPrice("URL", callbackGasLimit);
 
-        if (pos.oracleComission > pos.collateral)
-            throw;
+        assert (pos.oracleComission < pos.collateral);
 
-        bytes32 myId = oraclize_query("URL", buildOracleUrl(pos.symbol, pos.oracle));
+        bytes32 myId = oraclize_query("URL", buildOracleUrl(pos.symbol, pos.oracle), callbackGasLimit);
         UpdatePosition(positionId);
         positions[positionId] = pos;
-        myidToPositionId[myId] = positionId;
+        oracleRequests[myId] = OracleRequest(true, positionId, 0x0, 0);
+    }
+
+    function createPositionFromOrder(uint id, Order order, address countrerparty, uint price, uint oracleComission) internal {
+        Position memory position = Position(
+            order.symbol,
+            order.oracle,
+            order.long ? countrerparty : order.owner,
+            order.long ? order.owner : countrerparty,
+            order.expiration,
+            price,
+            order.collateral,
+
+            false,
+            false,
+            oracleComission,
+            0,
+            0,
+            0
+        );
+
+        uint positionId = nextPositionId();
+        positions[positionId] = position;
+        UpdateOrder(id);
+        UpdatePosition(positionId);
+        delete orders[id];
     }
 
 

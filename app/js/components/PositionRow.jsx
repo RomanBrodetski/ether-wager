@@ -59,7 +59,7 @@ class PositionRow extends React.Component {
       )
     } else if (this.props.position.canExecute()) {
       return (
-        <a className="btn btn-warning btn-sm" href="#" onClick={(e) => this.execute(e)}>expire</a>
+        <a className="btn btn-warning btn-sm" href="#" onClick={(e) => this.execute(e)}>exercise</a>
       )
     } else if (this.props.position.canClaim()) {
       return (
@@ -98,7 +98,7 @@ class PositionRow extends React.Component {
           {this.props.position.executed && <span className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>}
         </span></td>
         <td>
-            {this.props.position.oracleRequested ? this.props.position.oracleComissionETH : "?"}
+            {this.props.position.oracleComissionETH}
         </td>
         <td>
             {this.expiresColumn()}
