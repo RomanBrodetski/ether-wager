@@ -15,6 +15,6 @@ contract TestableCfdMarket is CfdMarket {
   }
 
   function oraclize_query(string datasource, string arg) oraclizeAPI internal returns (bytes32 id){
-    return 0x0;
+    return 0x1;
   }
 }

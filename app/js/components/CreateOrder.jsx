@@ -78,7 +78,7 @@ class CreateOrder extends React.Component {
       this.state.spot,
       this.state.premium,
       this.state.limit,
-      this.state.leverage
+      this.state.leverage,
       timestamp
     ).then(
       () => this.setState({

@@ -10,12 +10,14 @@ function getAccount(number, callback) {
   });
 }
 
-function createSampleOrder(callback) {
+function createSampleFixedOrder(callback) {
   TestableCfdMarket.lastOrderId(function(e, id) {
     TestableCfdMarket.createOrder(
         "AAPL",
         0,
         true,
+        false,
+        0,
         10000,
         0,
         {value: Math.pow(10, 18), gas: 300000},
@@ -29,7 +31,7 @@ function createSampleOrder(callback) {
 
 function createSamlpePosition(callback) {
   getAccount(4, function(anotherAccount) {
-    createSampleOrder(function(orderId) {
+    createSampleFixedOrder(function(orderId) {
       TestableCfdMarket.trade(orderId, {value: Math.pow(10, 18), from: anotherAccount, gas: 500000}, function(e, r) {
         TestableCfdMarket.lastPositionId(function(e, pId) {
           assert.equal(e, null);
@@ -51,7 +53,7 @@ describe("TestableCfdMarket", function() {
   });
 
   it("should create a simple order properly", function(done) {
-    createSampleOrder(function(id) {
+    createSampleFixedOrder(function(id) {
       console.log(id)
       TestableCfdMarket.orders(id, function(e, result) {
         assert.equal(result[0].toString(), "AAPL");
@@ -68,7 +70,7 @@ describe("TestableCfdMarket", function() {
 
   it("should allow to cancel own order", function(done) {
     web3.eth.getBalance(TestableCfdMarket.address, function(e, initialBalance) {
-      createSampleOrder(function(id) {
+      createSampleFixedOrder(function(id) {
         web3.eth.getBalance(TestableCfdMarket.address, function(e, balance) {
           assert(balance, initialBalance + Math.pow(10, 18));
           TestableCfdMarket.cancelOrder(id, function(e, result) {
@@ -87,7 +89,7 @@ describe("TestableCfdMarket", function() {
 
   it("should not allow to cancel other's order", function(done) {
     getAccount(4, function(anotherAccount) {
-      createSampleOrder(function(id) {
+      createSampleFixedOrder(function(id) {
         web3.eth.getBalance(TestableCfdMarket.address, function(e, creaetedBalance) {
           TestableCfdMarket.cancelOrder(id, {from: anotherAccount}, function(e, result) {
             TestableCfdMarket.orders(id, function(e, result) {
@@ -105,7 +107,7 @@ describe("TestableCfdMarket", function() {
 
   it("should not allow to trade without collateral", function(done) {
     getAccount(4, function(anotherAccount) {
-      createSampleOrder(function(orderId) {
+      createSampleFixedOrder(function(orderId) {
         TestableCfdMarket.trade(orderId, {value: Math.pow(10, 18) - 1, from: anotherAccount}, function(e, result) {
           assert.notEqual(e, null);
           TestableCfdMarket.orders(orderId, function(e, result) {
@@ -164,7 +166,7 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got higher", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x0, "120", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x1, "120", {gas: 500000}, function(e, r) {
           TestableCfdMarket.positions(pId, function(e, pos) {
             assert.equal(pos[7], true);
             assert.equal(pos[10].toNumber(), 12000);
@@ -180,7 +182,7 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got lower", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x0, "55.0", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x1, "55.0", {gas: 500000}, function(e, r) {
           TestableCfdMarket.positions(pId, function(e, pos) {
             assert.equal(pos[7], true);
             assert.equal(pos[10].toNumber(), 5500);
@@ -196,7 +198,7 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got over the roof", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x0, "550.00", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x1, "550.00", {gas: 500000}, function(e, r) {
           TestableCfdMarket.positions(pId, function(e, pos) {
             assert.equal(pos[7], true);
             assert.equal(pos[10].toNumber(), 55000);
@@ -212,7 +214,7 @@ describe("TestableCfdMarket", function() {
   it("callback computes positions properly if price got to zero", function(done) {
     createSamlpePosition(function(otherAcc, pId, oId) {
       TestableCfdMarket.execute(pId, {gas: 500000}, function(e, r) {
-        TestableCfdMarket.__callback(0x0, "0", {gas: 500000}, function(e, r) {
+        TestableCfdMarket.__callback(0x1, "0", {gas: 500000}, function(e, r) {
           TestableCfdMarket.positions(pId, function(e, pos) {
             assert.equal(pos[7], true);
             assert.equal(pos[10].toNumber(), 0);
