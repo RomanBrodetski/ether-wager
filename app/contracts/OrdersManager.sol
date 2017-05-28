@@ -37,6 +37,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         uint id = nextOrderId();
 
         CreateOrder(id);
+        UpdateOrder(id);
 
         orders[id] = order;
         return id;
@@ -47,6 +48,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         assert(order.owner == msg.sender);
         if (!order.owner.send(order.collateral))
             throw;
+        UpdateOrder(id);
         delete orders[id];
     }
 

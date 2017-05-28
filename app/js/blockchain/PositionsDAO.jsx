@@ -6,8 +6,13 @@
     .then((positions) => _.chain(positions)
       .map((position) => new Position(position[0], position[1]))
       .sortBy((position) => position.symbol)
+      .indexBy("id")
       .value()
       )
+  }
+
+  static loadPosition(id) {
+    return CfdMarket.positions(id).then(position => new Position(position, id))
   }
 
   static execute(position) {

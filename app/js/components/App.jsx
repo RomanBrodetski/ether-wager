@@ -15,14 +15,13 @@ class App extends React.Component {
     this.loadBlockchainData = this.loadBlockchainData.bind(this)
     this.loadSymbolOracles = this.loadSymbolOracles.bind(this)
     this.changeSymbol = this.changeSymbol.bind(this)
-    this.loadBlockchainData()
+    this.loadInitialOrders()
     this.loadSymbolOracles()
 
     this.choosePositions = this.choosePositions.bind(this);
+    this.computeCounters = this.computeCounters.bind(this);
     this.toggle = this.toggle.bind(this);
     this.switchTabs = this.switchTabs.bind(this);
-
-    CfdMarket.OracleRespond({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainTradeEvent.bind(this))
   }
 
   switchTabs(event) {
@@ -37,47 +36,69 @@ class App extends React.Component {
     })
   }
 
-  handleBlockchainTradeEvent() {
-    console.log("oracle responded");
-    this.loadBlockchainData();
+  handleBlockchainOrderEvent(event) {
+    OrdersDAO.loadOrder(event.args.id.toNumber()).then((order) => {
+      this.setState({
+        orders: Object.assign(this.state.orders, {[order.id]: order})
+      })
+      this.computeCounters();
+    })
+  }
+
+  handleBlockchainPositionEvent(event) {
+    PositionsDAO.loadPosition(event.args.id.toNumber()).then((position) => {
+      this.setState({
+        positions: Object.assign(this.state.positions, {[position.id]: position})
+      })
+      this.computeCounters();
+    })
   }
 
   loadSymbolOracles() {
     Object.values(this.state.symbols).forEach((symbolObj) => {
-      Oracles.getOracleInfo(symbolObj.symbol, symbolObj.oracle)
-        .then((info) => this.setState({
+      Oracles.getOracleInfo(symbolObj.symbol, symbolObj.oracle).then((info) => {
+        this.setState({
           oracles: Object.assign(this.state.oracles, {[symbolObj.symbol]: info})
-        }))
+        })
+        CfdMarket.UpdatePosition({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainPositionEvent.bind(this))
+        CfdMarket.UpdateOrder({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainOrderEvent.bind(this))
+      })
     })
   }
 
-  loadBlockchainData() {
+  computeCounters() {
+    this.setState({
+      counters: _(Object.keys(this.state.symbols).map((symbol) =>
+        Object.assign(this.state.counters[symbol] || {}, {
+          symbol: symbol,
+          totalOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol).length,
+          myLongOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol && o.owner == web3.eth.defaultAccount && o.long).length,
+          myShortOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol && o.owner == web3.eth.defaultAccount && !o.long).length,
+          longPositions: Object.values(this.state.positions || {}).filter((o) => o.symbol == symbol && o.own && o.long).length,
+          shortPositions: Object.values(this.state.positions || {}).filter((o) => o.symbol == symbol && o.own && !o.long).length
+        })
+      )).indexBy("symbol")
+    })
+  }
+
+  loadInitialOrders() {
     OrdersDAO.loadOrders().then((orders) => {
       this.setState({
-        orders: orders,
-        counters: _(Object.keys(this.state.symbols).map((symbol) =>
-            Object.assign(this.state.counters[symbol] || {}, {
-              symbol: symbol,
-              totalOrders: orders.filter((o) => o.symbol == symbol).length,
-              myLongOrders: orders.filter((o) => o.symbol == symbol && o.owner == web3.eth.defaultAccount && o.long).length,
-              myShortOrders: orders.filter((o) => o.symbol == symbol && o.owner == web3.eth.defaultAccount && !o.long).length
-            })
-          )).indexBy("symbol")
+        orders: orders
       })
+      this.computeCounters()
     })
     PositionsDAO.loadPositions().then((positions) => {
       // Filter positions
       this.setState({
-        positions: positions,
-        counters: _(Object.keys(this.state.symbols).map((symbol) =>
-            Object.assign(this.state.counters[symbol] || {}, {
-              symbol: symbol,
-              longPositions: positions.filter((o) => o.symbol == symbol && o.own && o.long).length,
-              shortPositions: positions.filter((o) => o.symbol == symbol && o.own && !o.long).length
-            })
-          )).indexBy("symbol")
+        positions: positions
       })
+      this.computeCounters()
     })
+  }
+
+  loadBlockchainData() {
+    // noop, as we use blockchain events now
   }
 
   changeSymbol(e, symbol) {
@@ -139,14 +160,14 @@ class App extends React.Component {
                       {this.state.positions === undefined
                         ? <div className="tab-content"><h1>Loading...</h1></div>
                         : <div className="tab-content">
-                          {this.state.positions === []
+                          {this.state.positions === {}
                             ? <p className="text-info" style={{marginTop: '1em'}}>You don't have any positions yet</p>
                             : <div role="tabpanel" className="tab-pane active">
                                 <Positions
                                   onTrade={this.loadBlockchainData}
                                   oracles={this.state.oracles}
                                   symbol={this.state.activeSymbol}
-                                  positions={this.choosePositions(this.state.positions)} />
+                                  positions={this.choosePositions(Object.values(this.state.positions))} />
                               </div>
                           }
                           </div>
@@ -183,7 +204,7 @@ class App extends React.Component {
                           this.state.orders === undefined
                             ? <h1>Loading...</h1>
                             : <OrderBook
-                                orders={this.state.orders.filter((order) => order.symbol === this.state.activeSymbol)}
+                                orders={Object.values(this.state.orders).filter((order) => order.symbol === this.state.activeSymbol)}
                                 onTrade={this.loadBlockchainData} />
                         }
                         <div>

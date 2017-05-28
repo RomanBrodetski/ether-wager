@@ -14,13 +14,13 @@ class SelectSymbol extends React.Component {
 
   short(sym) {
     if (this.props.counters[sym])
-      return this.props.counters[sym].myShortOrders + this.props.counters[sym].shortPositions
+      return this.props.counters[sym].myShortOrders
 
   }
 
   long(sym) {
     if (this.props.counters[sym])
-      return this.props.counters[sym].myLongOrders + this.props.counters[sym].longPositions
+      return this.props.counters[sym].myLongOrders
   }
 
   spanIfPresent(value, symbolClass, title) {

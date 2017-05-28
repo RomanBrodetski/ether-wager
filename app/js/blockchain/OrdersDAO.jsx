@@ -7,8 +7,13 @@ class OrdersDAO {
       .map((order) => new Order(order[0], order[1]))
       .filter((order) => !(order.isNull()))
       .sortBy((order) => order.limit)
+      .indexBy("id")
       .value()
       )
+  }
+
+  static loadOrder(id) {
+    return CfdMarket.orders(id).then(order => new Order(order, id))
   }
 
 

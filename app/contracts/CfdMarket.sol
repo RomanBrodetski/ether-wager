@@ -52,6 +52,8 @@ contract CfdMarket is OrdersManager {
 
         uint positionId = nextPositionId();
         positions[positionId] = position;
+        UpdateOrder(orderId);
+        UpdatePosition(positionId);
         delete orders[orderId];
         return positionId;
     }
@@ -67,6 +69,8 @@ contract CfdMarket is OrdersManager {
             if (!pos.short.send(pos.shortClaim)) throw;
             pos.shortClaim = 0;
         } else throw;
+
+        UpdatePosition(positionId);
 
         positions[positionId] = pos;
     }
@@ -96,6 +100,7 @@ contract CfdMarket is OrdersManager {
             throw;
 
         OracleRespond(positionId);
+        UpdatePosition(positionId);
 
         positions[positionId] = pos;
     }
@@ -112,6 +117,7 @@ contract CfdMarket is OrdersManager {
             throw;
 
         bytes32 myId = oraclize_query("URL", buildOracleUrl(pos.symbol, pos.oracle));
+        UpdatePosition(positionId);
         positions[positionId] = pos;
         myidToPositionId[myId] = positionId;
     }

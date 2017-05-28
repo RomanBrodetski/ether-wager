@@ -21,4 +21,12 @@ contract EventfulMarket {
     event CreatePosition(
         uint id
     );
+
+    event UpdatePosition(
+        uint id
+    );
+
+    event UpdateOrder(
+        uint id
+    );
 }
