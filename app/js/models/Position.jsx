@@ -64,7 +64,7 @@ class Position {
       if (isFinite(p)) {
         var factor = p / this.price
         factor = Math.max(Math.min(factor, 2), 0)
-        const long = factor * this.collateralETH
+        const long = factor * (this.collateralETH - this.oracleComissionETH / 2)
         const short = (this.collateralETH * 2) - long
         return this.long ? long : short
       }

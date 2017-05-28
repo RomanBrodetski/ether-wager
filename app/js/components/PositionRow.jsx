@@ -91,9 +91,10 @@ class PositionRow extends React.Component {
         <td>{this.props.position.collateralETH}</td>
         <td><span className={this.props.position.PNL(this.oraclePrice()) > 0 ? "text-success" : "text-danger"}>
           {MathUtils.round(this.props.position.PNL(this.oraclePrice()), 4)} ({this.PNLPerc()})
+          {this.props.position.executed && <span className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>}
         </span></td>
         <td>
-            {this.oracleRequested ? this.props.position.oracleComissionETH : "?"}
+            {this.props.position.oracleRequested ? this.props.position.oracleComissionETH : "?"}
         </td>
         <td>
             {this.expiresColumn()}
