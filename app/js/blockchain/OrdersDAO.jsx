@@ -19,7 +19,7 @@ class OrdersDAO {
         long,
         priceLimit * 100,
         timestampLimit,
-        {value: collateral * Math.pow(10, 18)}
+        {value: collateral * Math.pow(10, 18), gas: 1000000}
       )
   }
 

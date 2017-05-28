@@ -2,14 +2,14 @@ class CreateOrder extends React.Component {
   constructor(props) {
     super(props)
 
-    let date = new Date();
-    date.setDate(date.getDate() + 7);
-    date.setMinutes(0);
+    let defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 7);
+    defaultDate.setMinutes(0);
 
     this.state = {
       collateral: "",
       long: true,
-      date: date.toISOString().slice(0, -8),
+      date: defaultDate.toISOString().slice(0, -8),
       limit: ""
     };
 
@@ -28,9 +28,18 @@ class CreateOrder extends React.Component {
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     const name = event.target.name;
 
-    this.setState({
-      [name]: value
-    });
+    if (name === "date") {
+      let now = new Date().getTime();
+      let dateSet = new Date(value).getTime();
+
+      this.setState({
+        date: dateSet > now ? value : this.state.date
+      });
+    } else {
+      this.setState({
+        [name]: value
+      });
+    }
   }
 
   handleDirectionChange(event) {
@@ -58,6 +67,8 @@ class CreateOrder extends React.Component {
       textOverflow: "ellipsis",
       whiteSpace: "nowrap"
     };
+
+    let today = new Date();
 
     return (
       <div className="panel panel-primary">
