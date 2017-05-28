@@ -161,6 +161,7 @@ class CreateOrder extends React.Component {
                       </div>
                   )}
                 </div>
+                </div>
                 <div className="form-group">
                   <label>Expiration</label>
                   <div className="input-group">
