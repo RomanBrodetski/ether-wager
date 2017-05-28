@@ -15,7 +15,7 @@ class CreateOrder extends React.Component {
       status: "none",
       spot: true,
       premium: "",
-      leverage: 1
+      leverage: "1"
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -32,8 +32,6 @@ class CreateOrder extends React.Component {
   }
 
   handleInputChange(event) {
-    event.preventDefault();
-
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     const name = event.target.name;
 
@@ -53,13 +51,13 @@ class CreateOrder extends React.Component {
 
   handleDirectionChange(event) {
     this.setState({
-      long: event.target.value == "long"
+      long: event.target.value === "long"
     })
   }
 
   handleSpotChange(event) {
     this.setState({
-      spot: event.target.value == "spot"
+      spot: event.target.value === "spot"
     })
   }
 
@@ -101,7 +99,8 @@ class CreateOrder extends React.Component {
       whiteSpace: "nowrap"
     };
     let today = new Date();
-
+    console.log("Rendering!");
+    console.log("state! " + this.state.leverage);
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">Create Order for <strong>{this.props.symbol.symbol}</strong></div>
@@ -121,13 +120,6 @@ class CreateOrder extends React.Component {
                     <span> {this.props.oracle.query || "..."}</span>
                   </div>
                 </div>
-                <div className="form-group">
-                  <label>Collateral</label>
-                  <div className="input-group">
-                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} min="0.01" step="0.01"/>
-                    <span className="input-group-addon">ETH</span>
-                  </div>
-                </div>
                 <div className="radio">
                   <label className="radio-inline">
                     <input onFocus={this.handleInputFocus} onChange={this.handleDirectionChange} type="radio" name="direction" value="long" checked={this.state.long} /> long
@@ -137,6 +129,13 @@ class CreateOrder extends React.Component {
                   </label>
                 </div>
                 <div className="form-group">
+                  <label>Collateral</label>
+                  <div className="input-group">
+                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} min="0.01" step="0.01"/>
+                    <span className="input-group-addon">ETH</span>
+                  </div>
+                </div>
+                <div className="radio">
                   <label className="radio-inline">
                     <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="fixed" checked={!this.state.spot}  /> Fixed Price
                   </label>
@@ -144,36 +143,54 @@ class CreateOrder extends React.Component {
                     <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="spot" checked={this.state.spot} /> Spot Price
                   </label>
                 </div>
-                  {(this.state.spot) ? (
-                      <div> Spot Price +
+                {/*
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label class="sr-only">Email</label>
+                    <p class="form-control-static">email@example.com</p>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword2" class="sr-only">Password</label>
+                    <input type="password" class="form-control" id="inputPassword2" placeholder="Password">
+                  </div>
+                  <button type="submit" class="btn btn-default">Confirm identity</button>
+                </form> */}
+                {this.state.spot
+                  ? <div className="form-inline form-group">
+                      <div className="form-group">
+                        <label style={{paddingRight:'10px',fontSize:'16px',marginBottom:'0'}}>Spot Price </label>
+                      </div>
+                      <div className="form-group">
                         <div className="input-group">
-                          <input onChange={this.handleInputChange} type="number" className="form-control" name="premium" placeholder="Spot Price Premium" value={this.state.premium} step="0.1"/>
-                          <span className="input-group-addon">%</span>
+                          <input onChange={this.handleInputChange} type="number" className="form-control" name="premium" placeholder="+/- price" value={this.state.premium} step="1"/>
+                          <span className="input-group-addon"><i className="fa fa-percent" aria-hidden="true"></i></span>
                         </div>
                       </div>
-                    ) : (
+                    </div>
+                  : <div className="form-group">
                       <div className="input-group">
-                        <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="0.01"/>
-                        <span className="input-group-addon">$</span>
+                        <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="1"/>
+                        <span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
                       </div>
-                  )}
-                <div className="radio">
+                    </div>
+                }
+                <div className="form-group">
                   <label>Leverage</label>
-                  <div className="input-group">
+                  <div className="radio">
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="1" checked={this.state.leverage == 1} /> 1x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="1" checked={this.state.leverage === "1"} /> 1x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="2" checked={this.state.leverage == 2} /> 2x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="2" checked={this.state.leverage === "2"} /> 2x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="3" checked={this.state.leverage == 3} /> 3x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="3" checked={this.state.leverage === "3"} /> 3x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="5" checked={this.state.leverage == 5} /> 5x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="5" checked={this.state.leverage === "5"} /> 5x
                     </label>
                     <label className="radio-inline">
-                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="10" checked={this.state.leverage == 10} /> 10x
+                      <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="radio" name="leverage" value="10" checked={this.state.leverage === "10"} /> 10x
                     </label>
                   </div>
                 </div>

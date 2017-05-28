@@ -7,10 +7,8 @@ class App extends React.Component {
       symbols: _(this.props.symbols).indexBy("symbol"),
       oracles: {},
       counters: {},
-      ui: {
-        myPositionsOpen: true,
-        currentTab: "allPositions",
-      }
+      myPositionsOpened: true,
+      currentTab: "allPositions"
     }
     this.loadBlockchainData = this.loadBlockchainData.bind(this)
     this.loadSymbolOracles = this.loadSymbolOracles.bind(this)
@@ -18,7 +16,6 @@ class App extends React.Component {
     this.loadInitialOrders()
     this.loadSymbolOracles()
 
-    this.choosePositions = this.choosePositions.bind(this);
     this.computeCounters = this.computeCounters.bind(this);
     this.toggle = this.toggle.bind(this);
     this.switchTabs = this.switchTabs.bind(this);
@@ -28,15 +25,15 @@ class App extends React.Component {
     event.preventDefault();
 
     this.setState({
-      ui: Object.assign(this.state.ui, { currentTab: event.target.name })
+      currentTab: event.target.name
     })
   }
 
   toggle(event) {
     event.preventDefault();
-    
+
     this.setState({
-      ui: Object.assign(this.state.ui, { myPositionsOpen: !this.state.ui.myPositionsOpen })
+      myPositionsOpened: !this.state.myPositionsOpened
     })
   }
 
@@ -112,18 +109,6 @@ class App extends React.Component {
     })
   }
 
-  choosePositions(positions, type) {
-    if (this.state.ui.currentTab === "allPositions") {
-      return positions;
-    } else if (this.state.ui.currentTab === "isActive") {
-      return positions.filter((el) => ( el.state() === "active" ));
-    } else if (this.state.ui.currentTab === "needsAttention") {
-      return positions.filter((el) => ( el.state() === "pending" || el.state() === "waiting for oracle" || el.state() === "claim" ));
-    } else if (this.state.ui.currentTab === "isClosed") {
-      return positions.filter((el) => ( el.state() === "closed" ));
-    }
-  }
-
   render() {
     const loading = (
       <div className="tab-content"><h5 className="text-center"><i className="fa fa-spinner fa-spin" aria-hidden="true"></i> Loading</h5></div>
@@ -134,7 +119,7 @@ class App extends React.Component {
           <nav className="navbar navbar-default">
             <div className="container-fluid">
               <div className="navbar-header">
-                  <a className="navbar-brand" href="#">Ether Wager</a>
+                <a className="navbar-brand" href="#">Ether Wager</a>
               </div>
               <ul className="nav navbar-nav pull-right">
                 <li>
@@ -155,64 +140,52 @@ class App extends React.Component {
                     <span>
                       My positions overview
                       {
-                        this.state.ui.myPositionsOpen
+                        this.state.myPositionsOpened
                         ? <span className="glyphicon glyphicon-menu-down" aria-hidden="true" style={{paddingLeft: '5px', fontSize: '11px'}}></span>
                         : <span className="glyphicon glyphicon-menu-up" aria-hidden="true" style={{paddingLeft: '5px', fontSize: '11px'}}></span>
                       }
                     </span>
                   </div>
 
-                  <div className={this.state.ui.myPositionsOpen ? "panel-body" : "hidden panel-body"}>
+                  <div className={this.state.myPositionsOpened ? "panel-body" : "hidden panel-body"}>
                     <ul className="nav nav-tabs" role="tablist">
-                      <li role="presentation" className={this.state.ui.currentTab === "allPositions" ? "active" : ""}><a href="" name="allPositions" onClick={this.switchTabs}>All my positions</a></li>
-                      <li role="presentation" className={this.state.ui.currentTab === "isActive" ? "active" : ""}><a href="" name="isActive" onClick={this.switchTabs}>Active positions</a></li>
-                      <li role="presentation" className={this.state.ui.currentTab === "needsAttention" ? "active" : ""}><a href="" name="needsAttention" onClick={this.switchTabs}>Waiting for action</a></li>
-                      <li role="presentation" className={this.state.ui.currentTab === "isClosed" ? "active" : ""}><a href="" name="isClosed" onClick={this.switchTabs}>Closed</a></li>
+                      <li role="presentation" className={this.state.currentTab === "allPositions" ? "active" : ""}><a href="" name="allPositions" onClick={this.switchTabs}>All my positions</a></li>
+                      <li role="presentation" className={this.state.currentTab === "isActive" ? "active" : ""}><a href="" name="isActive" onClick={this.switchTabs}>Active positions</a></li>
+                      <li role="presentation" className={this.state.currentTab === "needsAttention" ? "active" : ""}><a href="" name="needsAttention" onClick={this.switchTabs}>Waiting for action</a></li>
+                      <li role="presentation" className={this.state.currentTab === "isClosed" ? "active" : ""}><a href="" name="isClosed" onClick={this.switchTabs}>Closed</a></li>
                     </ul>
 
                     <div>
                       {this.state.positions === undefined
                         ? loading
                         : <div className="tab-content">
-                            <div role="tabpanel" className={this.state.ui.currentTab === "allPositions" ? "tab-pane active" : "tab-pane"}>
-                              {Object.values(this.state.positions).length === 0
-                                ? <p className="text-primary" style={{marginTop: '1em'}}>You don't have any positions yet</p>
-                                : <Positions
-                                  onTrade={this.loadBlockchainData}
-                                  oracles={this.state.oracles}
-                                  symbol={this.state.activeSymbol}
-                                  positions={Object.values(this.state.positions)} />
-                               }
+                            <div role="tabpanel" className={this.state.currentTab === "allPositions" ? "tab-pane active" : "tab-pane"}>
+                              <Positions
+                                onTrade={this.loadBlockchainData}
+                                oracles={this.state.oracles}
+                                symbol={this.state.activeSymbol}
+                                positions={Object.values(this.state.positions)} />
                             </div>
-                            <div role="tabpanel" className={this.state.ui.currentTab === "isActive" ? "tab-pane active" : "tab-pane"}>
-                              {Object.values(this.state.positions).filter((el) => ( el.state() === "active" )).length === 0
-                                ? <p className="text-primary" style={{marginTop: '1em'}}>You don't have any active positions yet</p>
-                                : <Positions
-                                    onTrade={this.loadBlockchainData}
-                                    oracles={this.state.oracles}
-                                    symbol={this.state.activeSymbol}
-                                    positions={Object.values(this.state.positions).filter((el) => ( el.state() === "active" ))} />
-                                }
+                            <div role="tabpanel" className={this.state.currentTab === "isActive" ? "tab-pane active" : "tab-pane"}>
+                              <Positions
+                                onTrade={this.loadBlockchainData}
+                                oracles={this.state.oracles}
+                                symbol={this.state.activeSymbol}
+                                positions={Object.values(this.state.positions).filter((el) => ( el.state() === "active" ))} />
                             </div>
-                            <div role="tabpanel" className={this.state.ui.currentTab === "needsAttention" ? "tab-pane active" : "tab-pane"}>
-                              {Object.values(this.state.positions).filter((el) => ( el.state() === "pending" || el.state() === "waiting for oracle" || el.state() === "claim" )).length === 0
-                                ? <p className="text-primary" style={{marginTop: '1em'}}>You don't have waiting for action positions yet</p>
-                                : <Positions
-                                    onTrade={this.loadBlockchainData}
-                                    oracles={this.state.oracles}
-                                    symbol={this.state.activeSymbol}
-                                    positions={Object.values(this.state.positions).filter((el) => ( el.state() === "pending" || el.state() === "waiting for oracle" || el.state() === "claim" ))} />
-                                }
+                            <div role="tabpanel" className={this.state.currentTab === "needsAttention" ? "tab-pane active" : "tab-pane"}>
+                              <Positions
+                                onTrade={this.loadBlockchainData}
+                                oracles={this.state.oracles}
+                                symbol={this.state.activeSymbol}
+                                positions={Object.values(this.state.positions).filter((el) => ( el.state() === "pending" || el.state() === "waiting for oracle" || el.state() === "claim" ))} />
                             </div>
-                            <div role="tabpanel" className={this.state.ui.currentTab === "isClosed" ? "tab-pane active" : "tab-pane"}>
-                              {Object.values(this.state.positions).filter((el) => ( el.state() === "closed" )).length === 0
-                                ? <p className="text-primary" style={{marginTop: '1em'}}>You don't have any closed positions yet</p>
-                                : <Positions
-                                    onTrade={this.loadBlockchainData}
-                                    oracles={this.state.oracles}
-                                    symbol={this.state.activeSymbol}
-                                    positions={Object.values(this.state.positions).filter((el) => ( el.state() === "closed" ))} />
-                                }
+                            <div role="tabpanel" className={this.state.currentTab === "isClosed" ? "tab-pane active" : "tab-pane"}>
+                              <Positions
+                                onTrade={this.loadBlockchainData}
+                                oracles={this.state.oracles}
+                                symbol={this.state.activeSymbol}
+                                positions={Object.values(this.state.positions).filter((el) => ( el.state() === "closed" ))} />
                             </div>
                           </div>
                       }

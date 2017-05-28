@@ -3,7 +3,7 @@
 // #9c27b0 - pink*/
 
 /*.list-group-item.active>.badge, .nav-pills>.active>a>.badge*/
-body {
+body #root {
   background: #f7f7f9;
 }
 
