@@ -121,6 +121,10 @@ class App extends React.Component {
   }
 
   render() {
+    const loading = (
+      <div className="tab-content"><h5 className="text-center"><i className="fa fa-spinner fa-spin" aria-hidden="true"></i> Loading</h5></div>
+    );
+
     return (
        <div>
           <nav className="navbar navbar-default">
@@ -158,7 +162,7 @@ class App extends React.Component {
 
                     <div>
                       {this.state.positions === undefined
-                        ? <div className="tab-content"><h1>Loading...</h1></div>
+                        ? loading
                         : <div className="tab-content">
                             <div role="tabpanel" className={this.state.ui.currentTab === "allPositions" ? "tab-pane active" : "tab-pane"}>
                               {Object.values(this.state.positions).length === 0
@@ -232,7 +236,7 @@ class App extends React.Component {
                       <div className="col-md-12">
                         {
                           this.state.orders === undefined
-                            ? <h1>Loading...</h1>
+                            ? loading
                             : <OrderBook
                                 orders={Object.values(this.state.orders).filter((order) => order.symbol === this.state.activeSymbol)}
                                 onTrade={this.loadBlockchainData} />
