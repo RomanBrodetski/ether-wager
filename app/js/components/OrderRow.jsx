@@ -23,7 +23,7 @@ class OrderRow extends React.Component {
       loading: true
     });
 
-    // shoukd this be also added to success variant 'this.props.onTrade'
+    // should this be also added to success variant 'this.props.onTrade'
     OrdersDAO
       .trade(this.props.order)
       .then(
@@ -40,6 +40,10 @@ class OrderRow extends React.Component {
 
   cancel(e, id) {
     e.preventDefault()
+
+    this.setState({
+      loading: true
+    });
     
     OrdersDAO
       .cancel(this.props.order.id)
@@ -68,7 +72,9 @@ class OrderRow extends React.Component {
 
   actions() {
     if (this.state.loading) {
-      return (<span>loading <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>)
+      return (
+        <span>loading <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
+      )
     } else {
       if (this.state.status === "fail") {
         return (

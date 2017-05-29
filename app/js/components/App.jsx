@@ -136,7 +136,7 @@ class App extends React.Component {
             <div className="row">
               <div className="col-md-12">
                 <div className="panel panel-default">
-                  <div className="panel-heading" onClick={this.toggle}>
+                  <div className="panel-heading" onClick={this.toggle} style={{cursor:'pointer'}}>
                     <span>
                       My positions overview
                       {

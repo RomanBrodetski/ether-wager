@@ -26,23 +26,13 @@ class SelectSymbol extends React.Component {
   spanIfPresent(value, symbolClass, title) {
     if (value && isFinite(value) && value > 0) {
       return(
-        <span className={symbolClass} title={title} data-toggle="tooltip" data-placement="bottom">
-          {value}
-        </span>
+        <Tooltip title={title}>
+          <span className={symbolClass} style={{margin:'2px'}}>
+            {value}
+          </span>
+        </Tooltip>
       )
     }
-  }
-
-  componentDidMount() {
-    this.attachTooltip();
-  }
-
-  componentDidUpdate() {
-    this.attachTooltip();
-  }
-
-  attachTooltip() {
-    $('[data-toggle="tooltip"]').tooltip();
   }
 
   render() {
@@ -52,9 +42,11 @@ class SelectSymbol extends React.Component {
           <li key={symbolObj.symbol} className={this.props.activeSymbol === symbolObj.symbol ? "active" : ""}>
             <a href="" onClick={(e) => this.props.changeSymbol(e, symbolObj.symbol)}>
               {symbolObj.symbol}
-              {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "badge badgeGrey", "total orders")}
-              {this.spanIfPresent(this.long(symbolObj.symbol), "badge badgeGreen", "my long orders and positions")}
-              {this.spanIfPresent(this.short(symbolObj.symbol), "badge badgeOrange", "my short orders and positions")}
+              <span className='clearfix' style={{position:'relative',bottom:'2px',float:'right'}}>
+                {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "label label-default", "total orders")}
+                {this.spanIfPresent(this.long(symbolObj.symbol), "label label-success", "my long orders and positions")}
+                {this.spanIfPresent(this.short(symbolObj.symbol), "label label-warning", "my short orders and positions")}
+              </span>
             </a>
           </li>
         ))}

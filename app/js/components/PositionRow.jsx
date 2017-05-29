@@ -4,7 +4,8 @@ class PositionRow extends React.Component {
     super(props)
 
     this.state = {
-      loading: false
+      loading: false,
+      status: "none"
     }
 
     this.PNLPerc = this.PNLPerc.bind(this)
@@ -32,30 +33,52 @@ class PositionRow extends React.Component {
 
   execute(e) {
     e.preventDefault()
-    PositionsDAO
-      .execute(this.props.position)
-      .then(this.props.onTrade)
 
     this.setState({
       loading: true
     })
+
+    // should this be also added to success variant 'this.props.onTrade'
+    PositionsDAO
+      .execute(this.props.position)
+      .then(
+        () => this.setState({
+          loading: false,
+          status: "success"
+        }),
+        () => this.setState({
+          loading: false,
+          status: "fail"
+        })
+      )
+
   }
 
   claim(e) {
     e.preventDefault()
-    PositionsDAO
-      .claim(this.props.position)
-      .then(this.props.onTrade)
 
     this.setState({
       loading: true
-    })
+    });
+
+    PositionsDAO
+      .claim(this.props.position)
+      .then(
+        () => this.setState({
+          loading: false,
+          status: "success"
+        }),
+        () => this.setState({
+          loading: false,
+          status: "fail"
+        })
+      )
   }
 
   expiresColumn() {
     if (this.state.loading) {
       return (
-        <span className="loader">loading</span>
+        <span>loading <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
       )
     } else if (this.props.position.canExecute) {
       return (
@@ -66,10 +89,20 @@ class PositionRow extends React.Component {
         <a className="btn btn-success btn-sm" href="#" onClick={(e) => this.claim(e)}>claim</a>
       )
     } else {
-      let date = new Date(this.props.position.expiration * 1000);
-      let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+      // if (this.state.status === "fail") {
+      //   return (
+      //     <span><i className="glyphicon glyphicon-remove text-danger"></i> fail</span>
+      //   )
+      // } else if (this.state.status === "success") {
+      //   return (
+      //     <span><i className="glyphicon glyphicon-ok text-success"></i> success</span>
+      //   )
+      // } else {
+        let date = new Date(this.props.position.expiration * 1000);
+        let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
 
-      return date.toLocaleDateString('de-DE', options);
+        return date.toLocaleDateString('de-DE', options);
+      // }
     }
   }
 

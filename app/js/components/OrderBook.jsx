@@ -15,12 +15,12 @@ class OrderBook extends React.Component {
           : <table className="table table-hover">
               <thead>
                 <tr>
-                  <th>Type</th>
-                  <th>Collateral ETH</th>
-                  <th>Strike Price</th>
-                  <th>Expires</th>
-                  <th>*Input*</th>
-                  <th>*Action*</th>
+                  <th>Type <Tooltip title="Tooltip text" /></th>
+                  <th>Collateral ETH <Tooltip title="Tooltip text" /></th>
+                  <th>Strike Price <Tooltip title="Tooltip text" /></th>
+                  <th>Expires <Tooltip title="Tooltip text" /></th>
+                  <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
