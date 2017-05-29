@@ -37,20 +37,27 @@ class SelectSymbol extends React.Component {
 
   render() {
     return (
-      <ul className="nav nav-pills nav-stacked">
-        {Object.values(this.props.symbols).map((symbolObj) => (
-          <li key={symbolObj.symbol} className={this.props.activeSymbol === symbolObj.symbol ? "active" : ""}>
-            <a href="" onClick={(e) => this.props.changeSymbol(e, symbolObj.symbol)}>
-              {symbolObj.symbol}
-              <span className='clearfix' style={{position:'relative',bottom:'2px',float:'right'}}>
-                {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "label label-default", "total orders")}
-                {this.spanIfPresent(this.long(symbolObj.symbol), "label label-success", "my long orders and positions")}
-                {this.spanIfPresent(this.short(symbolObj.symbol), "label label-warning", "my short orders and positions")}
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div className="panel panel-default">
+        <div className="panel-heading">
+          List of Symbols
+        </div>
+        <div className="panel-body">
+          <ul className="nav nav-pills nav-stacked">
+            {Object.values(this.props.symbols).map((symbolObj) => (
+              <li key={symbolObj.symbol} className={this.props.activeSymbol === symbolObj.symbol ? "active" : ""}>
+                <a href="" onClick={(e) => this.props.changeSymbol(e, symbolObj.symbol)}>
+                  {symbolObj.symbol}
+                  <span className='clearfix' style={{position:'relative',bottom:'2px',float:'right'}}>
+                    {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "label label-default", "total orders")}
+                    {this.spanIfPresent(this.long(symbolObj.symbol), "label label-success", "my long orders and positions")}
+                    {this.spanIfPresent(this.short(symbolObj.symbol), "label label-warning", "my short orders and positions")}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     )
   }
 
