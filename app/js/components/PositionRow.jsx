@@ -78,7 +78,7 @@ class PositionRow extends React.Component {
   expiresColumn() {
     if (this.state.loading) {
       return (
-        <span>loading <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
+        <span>processing <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
       )
     } else if (this.props.position.canExecute) {
       return (

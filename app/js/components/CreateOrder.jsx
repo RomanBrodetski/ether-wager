@@ -151,6 +151,7 @@ class CreateOrder extends React.Component {
                   </label>
                   <label className="radio-inline">
                     <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="spot" checked={this.state.spot} /> Spot Price
+                    &nbsp;<Tooltip title="The strike price will be computed at the position create time based on the spot price provided by oracle and the percentage in the box below. Value of 100% corresponds to the strike price being equal to spot price." />
                   </label>
                 </div>
                 {this.state.spot

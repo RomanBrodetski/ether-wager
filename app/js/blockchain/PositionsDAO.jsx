@@ -17,7 +17,7 @@
   }
 
   static loadPosition(id) {
-    return Promise.all([CfdMarket.positions(id), CfdMarket.exercises(id)]).then(r => new Position(r[0], id, r[1]))
+    return Promise.all([CfdMarket.positions(id), CfdMarket.exercises(id), CfdMarket.positionOracleRequested(id)]).then(r => new Position(r[0], id, r[1], r[2]))
   }
 
   static execute(position) {

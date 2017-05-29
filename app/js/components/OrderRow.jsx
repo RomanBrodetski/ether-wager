@@ -77,7 +77,7 @@ class OrderRow extends React.Component {
   actions() {
     if (this.state.loading) {
       return (
-        <span>loading <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
+        <span>processing <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
       )
     } else {
       if (this.state.status === "fail") {
@@ -86,7 +86,7 @@ class OrderRow extends React.Component {
         )
       } else if (this.state.status === "success") {
         return (
-          <span><i className="glyphicon glyphicon-ok text-success"></i> waiting for oracle</span>
+          <span><i className="fa fa-spinner fa-spin"></i> waiting for oracle</span>
         )
       } else {
         return (
