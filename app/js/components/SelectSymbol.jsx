@@ -41,7 +41,7 @@ class SelectSymbol extends React.Component {
         {Object.values(this.props.symbols).map((symbolObj) => (
           <li key={symbolObj.symbol} className={this.props.activeSymbol === symbolObj.symbol ? "active" : ""}>
             <a href="" onClick={(e) => this.props.changeSymbol(e, symbolObj.symbol)}>
-              {symbolObj.symbol}
+              {symbolObj.caption}
               <span className='clearfix' style={{position:'relative',bottom:'2px',float:'right'}}>
                 {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "label label-default", "total orders")}
                 {this.spanIfPresent(this.long(symbolObj.symbol), "label label-success", "my long orders and positions")}

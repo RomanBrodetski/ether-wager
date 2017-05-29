@@ -4,13 +4,15 @@ import "./vendor/oraclizeAPI.sol";
 
 contract OracleUrls is usingOraclize{
 
-    enum Oracles { Yahoo, CryptoUsd }
+    enum Oracles { Yahoo, CryptoUsd, CryptoBtc }
 
     function buildOracleUrl(bytes32 symbol, Oracles oracle) constant returns (string) {
         if (oracle == Oracles.Yahoo)
             return yahooOracleUrl(symbol);
         if (oracle == Oracles.CryptoUsd)
             return cryptocompareUsdOracleUrl(symbol);
+        if (oracle == Oracles.CryptoBtc)
+            return cryptocompareBtcOracleUrl(symbol);
         throw;
     }
 
@@ -32,13 +34,27 @@ contract OracleUrls is usingOraclize{
         string memory url = strConcat(
             "https://min-api.cryptocompare.com/data/price?fsym=",
             bytes32ToString(symbol),
-            "&tsyms=USD"
+            "&tsyms=USD&e=Kraken"
         );
 
         return strConcat(
             "json(",
             url,
             ").USD"
+        );
+    }
+
+    function cryptocompareBtcOracleUrl(bytes32 symbol) constant internal returns (string) {
+        string memory url = strConcat(
+            "https://min-api.cryptocompare.com/data/price?fsym=",
+            bytes32ToString(symbol),
+            "&tsyms=BTC&e=Kraken"
+        );
+
+        return strConcat(
+            "json(",
+            url,
+            ").BTC"
         );
     }
 
