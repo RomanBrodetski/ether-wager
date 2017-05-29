@@ -11,19 +11,20 @@ class Positions extends React.Component {
     return (
       <div>
         {this.props.positions.length === 0
-          ? <p className="text-primary" style={{marginTop: '1em'}}>You don't have this positions yet</p>
+          ? <p className="text-primary" style={{marginTop: '1em'}}>There are no positions here yet</p>
           : <table className="table table-hover mb0">
               <thead>
                 <tr>
-                  <th>State <Tooltip title="Tooltip text" /></th>
-                  <th>Type <Tooltip title="Tooltip text" /></th>
-                  <th>Symbol <Tooltip title="Tooltip text" /></th>
-                  <th>Strike Price <Tooltip title="Tooltip text" /></th>
-                  <th>Price <Tooltip title="Tooltip text" /></th>
-                  <th>Collateral <Tooltip title="Tooltip text" /></th>
-                  <th>PNL <Tooltip title="Tooltip text" /></th>
-                  <th>Oracle Comission <Tooltip title="Tooltip text" /></th>
-                  <th>Expiration <Tooltip title="Tooltip text" /></th>
+                  <th>State</th>
+                  <th>Type </th>
+                  <th>Symbol</th>
+                  <th>Leverage</th>
+                  <th>Strike Price <Tooltip title="The price that will be used to compute the P&N at the Exercise time" /></th>
+                  <th>Price <Tooltip title="Current or Exercise oracle price" /></th>
+                  <th>Collateral</th>
+                  <th>PNL <Tooltip title="Current or Exercise profit or loss. Please note that only already payed oracle comission is taken into account." /></th>
+                  <th>Oracle Comission <Tooltip title="Total oracle comission payed for this position. There may be one or two oracle calls, depending on the type of order." /></th>
+                  <th>Expiration </th>
                 </tr>
               </thead>
               <tbody>

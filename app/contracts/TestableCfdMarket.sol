@@ -10,11 +10,11 @@ contract TestableCfdMarket is CfdMarket {
     return msg.sender;
   }
 
-  function oraclize_getPrice(string arg) oraclizeAPI internal returns (uint) {
+  function oraclize_getPrice(string arg, uint gas) oraclizeAPI internal returns (uint) {
     return 10000;
   }
 
-  function oraclize_query(string datasource, string arg) oraclizeAPI internal returns (bytes32 id){
-    return 0x1;
+  function oraclize_query(string datasource, string arg, uint gas) oraclizeAPI internal returns (bytes32 id){
+    return 0x0;
   }
 }

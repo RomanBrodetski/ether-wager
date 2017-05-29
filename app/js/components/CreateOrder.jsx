@@ -23,6 +23,7 @@ class CreateOrder extends React.Component {
     this.handleSpotChange = this.handleSpotChange.bind(this);
     this.createOrder = this.createOrder.bind(this);
     this.handleInputFocus = this.handleInputFocus.bind(this);
+    this.formIsValid = this.formIsValid.bind(this);
   }
 
   handleInputFocus() {
@@ -74,10 +75,10 @@ class CreateOrder extends React.Component {
       this.props.symbol.oracle,
       this.state.long,
       this.state.spot,
-      this.state.premium - 100, // Absolute percentage to relative
+      this.state.premium,
       this.state.limit,
-      this.state.leverage,
-      timestamp
+      timestamp,
+      this.state.leverage
     ).then(
       () => this.setState({
         isLoading: false,
@@ -92,6 +93,14 @@ class CreateOrder extends React.Component {
     );
   }
 
+  formIsValid() {
+    return (!this.state.isLoading &&
+      this.state.collateral >= 0.05 &&
+      this.state.collateral.length &&
+      (this.state.limit.length && !this.state.spot || this.state.premium && this.state.spot) &&
+      this.state.date.length)
+  }
+
   render() {
     const linkStyle = {
       overflow: "hidden",
@@ -99,6 +108,8 @@ class CreateOrder extends React.Component {
       whiteSpace: "nowrap"
     };
     let today = new Date();
+
+    console.log("rerender")
 
     return (
       <div className="panel panel-primary">
@@ -130,7 +141,7 @@ class CreateOrder extends React.Component {
                 <div className="form-group">
                   <label>Collateral</label>
                   <div className="input-group">
-                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} min="0.01" step="0.01"/>
+                    <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="number" className="form-control" name="collateral" placeholder="Collateral" value={this.state.collateral} min="0.05" step="0.01"/>
                     <span className="input-group-addon">ETH</span>
                   </div>
                 </div>
@@ -140,6 +151,7 @@ class CreateOrder extends React.Component {
                   </label>
                   <label className="radio-inline">
                     <input onFocus={this.handleInputFocus} onChange={this.handleSpotChange} type="radio" name="spot" value="spot" checked={this.state.spot} /> Spot Price
+                    &nbsp;<Tooltip title="The strike price will be computed at the position create time based on the spot price provided by oracle and the percentage in the box below. Value of 100% corresponds to the strike price being equal to spot price." />
                   </label>
                 </div>
                 {this.state.spot
@@ -182,7 +194,7 @@ class CreateOrder extends React.Component {
                     <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="datetime-local" className="form-control" name="date" placeholder="Set your date" value={this.state.date} />
                   </div>
                 </div>
-                <button onClick={this.createOrder} disabled={!this.state.isLoading && this.state.collateral.length && (this.state.limit.length && !this.state.spot || this.state.premium && this.state.spot) && this.state.date.length ? false : true} className="btn btn-success" type="button">
+                <button onClick={this.createOrder} disabled={!this.formIsValid()} className="btn btn-success" type="button">
                   <span>Create Order </span>
                   {this.state.isLoading && <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>}
                 </button>

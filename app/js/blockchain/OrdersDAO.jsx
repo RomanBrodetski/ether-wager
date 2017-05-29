@@ -17,16 +17,15 @@ class OrdersDAO {
   }
 
   static createOrder(collateral, symbol, oracle, long, spot, premium, priceLimit, timestampLimit, leverage) {
-
     return CfdMarket.createOrder(
         symbol,
         Oracles.toBlockchain(oracle),
         long,
-        spot,
+        leverage,
         spot ? premium * 100 : 0, //percentages -> basis points
         spot ? 0 : priceLimit * 100, //dollars -> cents
         timestampLimit,
-        {value: collateral * Math.pow(10, 18), gas: 1000000} //eth -> wei
+        {value: new web3.BigNumber(collateral).times(Math.pow(10, 18)), gas: 300000} //eth -> wei
       )
   }
 
@@ -34,7 +33,11 @@ class OrdersDAO {
     return CfdMarket.cancelOrder(orderId)
   }
 
-  static trade(order) {
-    return CfdMarket.trade(order.id, {value: order.collateral, gas: 500000})
+  static trade(order, amount) {
+    if (amount == order.collateral) {
+      return CfdMarket.trade(order.id, {value: order.collateral, gas: 500000})
+    } else {
+      return CfdMarket.partialTrade(order.id, {value: amount, gas: 700000})
+    }
   }
 }

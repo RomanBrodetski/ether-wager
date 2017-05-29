@@ -3,6 +3,7 @@ class App extends React.Component {
     super(props)
 
     this.state = {
+      trackedSymbols: [],
       activeSymbol: this.props.symbols[0].symbol,
       symbols: _(this.props.symbols).indexBy("symbol"),
       oracles: {},
@@ -12,7 +13,7 @@ class App extends React.Component {
     this.loadSymbolOracles = this.loadSymbolOracles.bind(this)
     this.changeSymbol = this.changeSymbol.bind(this)
     this.loadInitialOrders()
-    this.loadSymbolOracles()
+    setInterval(this.loadSymbolOracles, 3000);
 
     this.computeCounters = this.computeCounters.bind(this);
   }
@@ -36,8 +37,9 @@ class App extends React.Component {
   }
 
   loadSymbolOracles() {
-    Object.values(this.state.symbols).forEach((symbolObj) => {
-      Oracles.getOracleInfo(symbolObj.symbol, symbolObj.oracle).then((info) => {
+    Object.values(this.state.positions).map((pos) => pos.symbol).concat([this.state.activeSymbol]).forEach((symbol) => {
+      const symbolObj = this.state.symbols[symbol]
+      Oracles.getOracleInfo(symbolObj.oracleArg, symbolObj.oracleType).then((info) => {
         this.setState({
           oracles: Object.assign(this.state.oracles, {[symbolObj.symbol]: info})
         })
@@ -86,7 +88,7 @@ class App extends React.Component {
     e.preventDefault()
     this.setState({
       activeSymbol: symbol
-    })
+    }, this.loadSymbolOracles)
   }
 
   render() {

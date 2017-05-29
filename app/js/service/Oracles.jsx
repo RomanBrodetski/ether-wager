@@ -1,6 +1,6 @@
 class Oracles {
   static toBlockchain(oracle) {
-    return _(["Yahoo", "CryptoUsd"]).indexOf(oracle);
+    return _(["Yahoo", "CryptoUsd", "CryptoBtc"]).indexOf(oracle);
   }
 
   static getOracleInfo(symbol, oracle) {

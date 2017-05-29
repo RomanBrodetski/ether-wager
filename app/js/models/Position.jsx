@@ -1,21 +1,22 @@
 class Position {
-  constructor(blockchainPosition, id) {
+  constructor(blockchainPosition, id, blockchainEx, oracleRequested) {
     this.id = id
-    this.symbol = blockchainPosition[0].toString()
+    this.symbol = web3.toUtf8(blockchainPosition[0].toString())
     this.oracle = blockchainPosition[1].toString()
     this.shortAddress = blockchainPosition[2].toString()
     this.longAddress = blockchainPosition[3].toString()
     this.expiration = blockchainPosition[4].toNumber()
     this.priceCents = blockchainPosition[5].toNumber()
     this.collateral = blockchainPosition[6].toString()
+    this.leverage = blockchainPosition[7].toNumber()
 
-    this.executed = blockchainPosition[7]
-    this.oracleRequested = blockchainPosition[8]
+    this.executed = blockchainPosition[8]
     this.oracleComission = blockchainPosition[9].toNumber()
-    this.expirationPriceCents = blockchainPosition[10].toNumber()
-    this.longClaim = blockchainPosition[11].toNumber()
-    this.shortClaim = blockchainPosition[12].toNumber()
+    this.expirationPriceCents = blockchainEx[0].toNumber()
+    this.longClaim = blockchainEx[1].toNumber()
+    this.shortClaim = blockchainEx[2].toNumber()
 
+    this.oracleRequested = oracleRequested
     this.own = this.longAddress == web3.eth.defaultAccount || this.shortAddress == web3.eth.defaultAccount
     this.long = this.own && this.longAddress == web3.eth.defaultAccount
     this.price = this.priceCents / 100
@@ -64,11 +65,11 @@ class Position {
     if (isFinite(oraclePrice)) {
       const p = this.computationBasePrice(oraclePrice)
       if (isFinite(p)) {
-        var factor = p / this.price
-        factor = Math.max(Math.min(factor, 2), 0)
-        const long = factor * (this.collateralETH - this.oracleComissionETH / 2)
-        const short = (this.collateralETH * 2) - long
-        return this.long ? long : short
+
+        const total = (2 * this.collateralETH - this.oracleComissionETH)
+        const base = total / 2
+        const long = Math.min(base + (base * p / this.price - base) * this.leverage, total)
+        return this.long ? long : (total - long)
       }
     }
   }

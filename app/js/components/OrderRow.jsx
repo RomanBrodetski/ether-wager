@@ -25,7 +25,7 @@ class OrderRow extends React.Component {
 
     // should this be also added to success variant 'this.props.onTrade'
     OrdersDAO
-      .trade(this.props.order)
+      .trade(this.props.order, new web3.BigNumber(this.state.positionAmount).times(Math.pow(10, 18)))
       .then(
         () => this.setState({
           loading: false,
@@ -44,7 +44,7 @@ class OrderRow extends React.Component {
     this.setState({
       loading: true
     });
-    
+
     OrdersDAO
       .cancel(this.props.order.id)
       .then(
@@ -61,19 +61,23 @@ class OrderRow extends React.Component {
 
   // TODO: use positionAmount for creating a position
   setAmount(event) {
-    let maxAmount = this.props.order.collateral / Math.pow(10, 18);
-    let positionAmount = (event.target.value <= maxAmount && event.target.value > 0) ? event.target.value : maxAmount;
+    const minCollateral = 0.05
+    let col = this.props.order.collateralETH;
+    let positionAmount = event.target.value >= col ? col :
+                        (event.target.value >= col - minCollateral ? col - minCollateral :
+                        (event.target.value <= minCollateral ? minCollateral : event.target.value)
+                        );
 
 
     this.setState({
-      positionAmount: positionAmount
+      positionAmount: MathUtils.round(positionAmount,4)
     })
   }
 
   actions() {
     if (this.state.loading) {
       return (
-        <span>loading <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
+        <span>processing <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
       )
     } else {
       if (this.state.status === "fail") {
@@ -82,7 +86,7 @@ class OrderRow extends React.Component {
         )
       } else if (this.state.status === "success") {
         return (
-          <span><i className="glyphicon glyphicon-ok text-success"></i> success</span>
+          <span><i className="fa fa-spinner fa-spin"></i> waiting for oracle</span>
         )
       } else {
         return (
@@ -103,8 +107,9 @@ class OrderRow extends React.Component {
       <tr>
         <td><span  className={"label label-" + (this.props.order.long ? "success" : "warning")}> {this.props.order.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
+        <td>{this.props.order.leverage}x</td>
         <td>{this.props.order.spot ? (
-            this.props.oracle.price.toString() + (this.props.order.premiumBp > 0 ? " + " : " - ") + Math.abs(this.props.order.premiumBp) + "% = " + MathUtils.round(this.props.oracle.price * (1 + this.props.order.premiumBp / 100), 2).toString()
+            this.props.oracle.price.toString() + (this.props.order.premiumBp > 100 ? " + " : " - ") + Math.abs(this.props.order.premiumBp - 100) + "% = " + MathUtils.round(this.props.oracle.price * this.props.order.premiumBp / 100, 2).toString()
           ) : (
             <div>
               {this.props.order.limit}

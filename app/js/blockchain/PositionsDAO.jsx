@@ -1,10 +1,15 @@
  class PositionsDAO {
   static loadPositions() {
     return CfdMarket.lastPositionId().then((lastPositionId) =>
-      Promise.all(_.range(1, lastPositionId.toNumber() + 1).map((id) => CfdMarket.positions(id).then(position => [position, id])))
+      Promise.all(_.range(1, lastPositionId.toNumber() + 1).map((id) => {
+        const posPromise = CfdMarket.positions(id).then(position => [position, id])
+        const exPromise = CfdMarket.exercises(id)
+        const orReqPromise = CfdMarket.positionOracleRequested(id)
+        return Promise.all([posPromise, exPromise, orReqPromise])
+      }))
     )
     .then((positions) => _.chain(positions)
-      .map((position) => new Position(position[0], position[1]))
+      .map((position) => new Position(position[0][0], position[0][1], position[1], position[2]))
       .sortBy((position) => position.symbol)
       .indexBy("id")
       .value()
@@ -12,7 +17,7 @@
   }
 
   static loadPosition(id) {
-    return CfdMarket.positions(id).then(position => new Position(position, id))
+    return Promise.all([CfdMarket.positions(id), CfdMarket.exercises(id), CfdMarket.positionOracleRequested(id)]).then(r => new Position(r[0], id, r[1], r[2]))
   }
 
   static execute(position) {
