@@ -22,6 +22,7 @@ class Help extends React.Component {
                 The other party gets the rest amount of the collateral.
               </p>
               <p>
+                Thus, the "long" party's profit and loss is equal to the price change in percentage.
                 If the price at least doubles, the party that bet on the price rise gets the whole collateral. For the "short" party to get the whole collateral
                 the price has to fall to zero.
               </p>
@@ -149,7 +150,7 @@ class Help extends React.Component {
                       Can be set as a fixed amount, or as a percentage to the spot price.
                       In this case, the strike price is computed automatically at the contract (not order) creation time.
                       This is not the same as setting the fixed strike price equal to the current asset price, as the price can change between the order creation
-                      and the contract creation. In general, it is recommended to set the dynamic strike prices.
+                      and the contract creation. In general, it is recommended to set the dynamic strike prices, but be aware that this requires an extra request to the oracle, which results in additional gas fees.
                     </li>
                     <li>
                       <b>Leverage</b>

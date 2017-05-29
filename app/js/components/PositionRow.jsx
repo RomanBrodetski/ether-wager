@@ -114,6 +114,7 @@ class PositionRow extends React.Component {
         <td>{this.props.position.state}</td>
         <td><span className={"label label-" + (this.props.position.long ? "success" : "danger")}>{this.props.position.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.position.symbol}</td>
+        <td>{this.props.position.leverage}x</td>
         <td>{this.props.position.price}</td>
         <td>
           {this.props.position.executed ? (
@@ -131,7 +132,7 @@ class PositionRow extends React.Component {
           {this.props.position.executed && <span className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>}
         </span></td>
         <td>
-            {this.props.position.oracleComissionETH}
+            {MathUtils.round(this.props.position.oracleComissionETH, 4)}
         </td>
         <td>
             {this.expiresColumn()}

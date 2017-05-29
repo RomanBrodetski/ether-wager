@@ -11,13 +11,14 @@ class Positions extends React.Component {
     return (
       <div>
         {this.props.positions.length === 0
-          ? <p className="text-primary" style={{marginTop: '1em'}}>You don't have this positions yet</p>
+          ? <p className="text-primary" style={{marginTop: '1em'}}>There are no positions here yet</p>
           : <table className="table table-hover mb0">
               <thead>
                 <tr>
                   <th>State <Tooltip title="Tooltip text" /></th>
                   <th>Type <Tooltip title="Tooltip text" /></th>
                   <th>Symbol <Tooltip title="Tooltip text" /></th>
+                  <th>Leverage</th>
                   <th>Strike Price <Tooltip title="Tooltip text" /></th>
                   <th>Price <Tooltip title="Tooltip text" /></th>
                   <th>Collateral <Tooltip title="Tooltip text" /></th>
