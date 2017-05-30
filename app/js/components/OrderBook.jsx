@@ -15,12 +15,12 @@ class OrderBook extends React.Component {
           : <table className="table table-hover">
               <thead>
                 <tr>
-                  <th>Type <Tooltip title="Tooltip text" /></th>
-                  <th>Collateral ETH <Tooltip title="Tooltip text" /></th>
+                  <th>Type <Tooltip title="The maker's direction of the proposed position." /></th>
+                  <th>Collateral ETH </th>
                   <th>Leverage</th>
-                  <th>Strike Price <Tooltip title="Tooltip text" /></th>
-                  <th>Expires <Tooltip title="Tooltip text" /></th>
-                  <th></th>
+                  <th>Strike Price</th>
+                  <th>Expires</th>
+                  <th> <Tooltip title="Desired collateral for partial trades. Partial trade is only possible if the residual value is more than the minimum collateral " /></th>
                   <th></th>
                 </tr>
               </thead>

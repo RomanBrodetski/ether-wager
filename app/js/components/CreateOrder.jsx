@@ -71,8 +71,8 @@ class CreateOrder extends React.Component {
 
     OrdersDAO.createOrder(
       this.state.collateral,
-      this.props.symbol.symbol,
-      this.props.symbol.oracle,
+      this.props.symbol.oracleArg,
+      this.props.symbol.oracleType,
       this.state.long,
       this.state.spot,
       this.state.premium,
@@ -108,9 +108,6 @@ class CreateOrder extends React.Component {
       whiteSpace: "nowrap"
     };
     let today = new Date();
-
-    console.log("rerender")
-
     return (
       <div className="panel panel-primary">
         <div className="panel-heading">Create Order for <strong>{this.props.symbol.symbol}</strong></div>

@@ -22,8 +22,8 @@ class Positions extends React.Component {
                   <th>Strike Price <Tooltip title="The price that will be used to compute the P&N at the Exercise time" /></th>
                   <th>Price <Tooltip title="Current or Exercise oracle price" /></th>
                   <th>Collateral</th>
-                  <th>PNL <Tooltip title="Current or Exercise profit or loss. Please note that only already payed oracle comission is taken into account." /></th>
-                  <th>Oracle Comission <Tooltip title="Total oracle comission payed for this position. There may be one or two oracle calls, depending on the type of order." /></th>
+                  <th>PNL <Tooltip title="Current or Exercise profit or loss. Oracle comission is not taken into account." /></th>
+                  <th>Oracle Comission <Tooltip title="Total oracle comission payed for this position. There may be one or two oracle calls, depending on the type of order. This comission is payed from the collateral." /></th>
                   <th>Expiration </th>
                 </tr>
               </thead>

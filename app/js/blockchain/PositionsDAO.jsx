@@ -9,6 +9,7 @@
       }))
     )
     .then((positions) => _.chain(positions)
+      .filter((position) => position[0][0][5].toNumber() > 0)
       .map((position) => new Position(position[0][0], position[0][1], position[1], position[2]))
       .sortBy((position) => position.symbol)
       .indexBy("id")

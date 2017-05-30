@@ -13,6 +13,8 @@ class PositionRow extends React.Component {
     this.claim = this.claim.bind(this)
     this.oraclePrice = this.oraclePrice.bind(this)
     this.expiresColumn = this.expiresColumn.bind(this)
+    this.pnlClassName = this.pnlClassName.bind(this)
+    this.pnlCaption = this.pnlCaption.bind(this)
   }
 
   componentWillReceiveProps(newProps) {
@@ -42,14 +44,14 @@ class PositionRow extends React.Component {
     PositionsDAO
       .execute(this.props.position)
       .then(
-        () => this.setState({
-          loading: false,
-          status: "success"
-        }),
-        () => this.setState({
-          loading: false,
-          status: "fail"
-        })
+        // () => this.setState({
+        //   loading: false,
+        //   status: "success"
+        // }),
+        // () => this.setState({
+        //   loading: false,
+        //   status: "fail"
+        // })
       )
 
   }
@@ -64,14 +66,14 @@ class PositionRow extends React.Component {
     PositionsDAO
       .claim(this.props.position)
       .then(
-        () => this.setState({
-          loading: false,
-          status: "success"
-        }),
-        () => this.setState({
-          loading: false,
-          status: "fail"
-        })
+        // () => this.setState({
+        //   loading: false,
+        //   status: "success"
+        // }),
+        // () => this.setState({
+        //   loading: false,
+        //   status: "fail"
+        // })
       )
   }
 
@@ -89,20 +91,40 @@ class PositionRow extends React.Component {
         <a className="btn btn-success btn-sm" href="#" onClick={(e) => this.claim(e)}>claim</a>
       )
     } else {
-      // if (this.state.status === "fail") {
-      //   return (
-      //     <span><i className="glyphicon glyphicon-remove text-danger"></i> fail</span>
-      //   )
-      // } else if (this.state.status === "success") {
-      //   return (
-      //     <span><i className="glyphicon glyphicon-ok text-success"></i> success</span>
-      //   )
-      // } else {
+      if (this.state.status === "fail") {
+        return (
+          <span><i className="glyphicon glyphicon-remove text-danger"></i> fail</span>
+        )
+      } else if (this.state.status === "success") {
+        return (
+          <span><i className="glyphicon glyphicon-ok text-success"></i> success</span>
+        )
+      } else {
         let date = new Date(this.props.position.expiration * 1000);
         let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
 
         return date.toLocaleDateString('de-DE', options);
-      // }
+      }
+    }
+  }
+
+  pnlClassName() {
+    if (!isFinite(MathUtils.round(this.props.position.PNL(this.oraclePrice()), 4))) {
+      return ""
+    } else {
+      return this.props.position.PNL(this.oraclePrice()) > 0 ? "text-success" : "text-danger"
+    }
+  }
+
+  pnlCaption() {
+    const pNl = MathUtils.round(this.props.position.PNL(this.oraclePrice()), 4)
+    const perc = this.PNLPerc()
+    if (isFinite(pNl)) {
+      return `${pNl} (${perc})`
+    } else {
+      return (
+        <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>
+        )
     }
   }
 
@@ -127,8 +149,8 @@ class PositionRow extends React.Component {
           )}
         </td>
         <td>{this.props.position.collateralETH}</td>
-        <td><span className={this.props.position.PNL(this.oraclePrice()) > 0 ? "text-success" : "text-danger"}>
-          {MathUtils.round(this.props.position.PNL(this.oraclePrice()), 4)} ({this.PNLPerc()})
+        <td><span className={this.pnlClassName()}>
+          {this.pnlCaption()}
           {this.props.position.executed && <span className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>}
         </span></td>
         <td>

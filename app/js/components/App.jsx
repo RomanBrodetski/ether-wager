@@ -3,7 +3,6 @@ class App extends React.Component {
     super(props)
 
     this.state = {
-      trackedSymbols: [],
       activeSymbol: this.props.symbols[0].symbol,
       symbols: _(this.props.symbols).indexBy("symbol"),
       oracles: {},
@@ -11,40 +10,56 @@ class App extends React.Component {
     }
     this.loadBlockchainData = this.loadBlockchainData.bind(this)
     this.loadSymbolOracles = this.loadSymbolOracles.bind(this)
+    this.trackedSymbols = this.trackedSymbols.bind(this)
     this.changeSymbol = this.changeSymbol.bind(this)
     this.loadInitialOrders()
-    setInterval(this.loadSymbolOracles, 3000);
+    setInterval(this.loadSymbolOracles, 10000);
 
     this.computeCounters = this.computeCounters.bind(this);
   }
 
   handleBlockchainOrderEvent(event) {
+    console.log("handleBlockchainOrderEvent")
     OrdersDAO.loadOrder(event.args.id.toNumber()).then((order) => {
-      this.setState({
-        orders: Object.assign(this.state.orders, {[order.id]: order})
-      })
-      this.computeCounters();
+      console.log("order loaded in App.jsx. Here it is:")
+      console.log(order)
+      if (order) {
+        console.log("upd")
+        this.setState({
+          orders: Object.assign(this.state.orders, {[order.id]: order})
+        })
+      } else {
+        console.log("rem")
+        this.setState({
+          orders: _.pick(this.state.orders, (value, key) => key !== event.args.id.toString())
+        }, this.computeCounters)
+      }
     })
   }
 
   handleBlockchainPositionEvent(event) {
+    console.log("handleBlockchainPositionEvent")
     PositionsDAO.loadPosition(event.args.id.toNumber()).then((position) => {
       this.setState({
         positions: Object.assign(this.state.positions, {[position.id]: position})
-      })
-      this.computeCounters();
+      }, this.computeCounters)
     })
   }
 
+  trackedSymbols() {
+    return _.uniq(Object.values(this.state.positions || []).map((pos) => pos.symbol).concat([this.state.activeSymbol]))
+  }
+
   loadSymbolOracles() {
-    Object.values(this.state.positions).map((pos) => pos.symbol).concat([this.state.activeSymbol]).forEach((symbol) => {
+    console.log("loadSymbolOracles")
+    Promise.all(this.trackedSymbols().map((symbol) => {
       const symbolObj = this.state.symbols[symbol]
-      Oracles.getOracleInfo(symbolObj.oracleArg, symbolObj.oracleType).then((info) => {
-        this.setState({
-          oracles: Object.assign(this.state.oracles, {[symbolObj.symbol]: info})
-        })
-        CfdMarket.UpdatePosition({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainPositionEvent.bind(this))
-        CfdMarket.UpdateOrder({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainOrderEvent.bind(this))
+      return Oracles.getOracleInfo(symbolObj.oracleArg, symbolObj.oracleType).then((info) => Object.assign(info, {symbol: symbol}))
+    }))
+    .then((data) => {
+      console.log("setting oracles: " + data.toString())
+      this.setState({
+        oracles: Object.assign(this.state.oracles, _(data).indexBy("symbol"))
       })
     })
   }
@@ -65,10 +80,12 @@ class App extends React.Component {
   }
 
   loadInitialOrders() {
+    console.log("loadInitialOrders")
     OrdersDAO.loadOrders().then((orders) => {
       this.setState({
         orders: orders
       })
+      CfdMarket.UpdateOrder({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainOrderEvent.bind(this))
       this.computeCounters()
     })
     PositionsDAO.loadPositions().then((positions) => {
@@ -76,6 +93,7 @@ class App extends React.Component {
       this.setState({
         positions: positions
       })
+      CfdMarket.UpdatePosition({from: web3.eth.accounts}, 'latest').then(this.handleBlockchainPositionEvent.bind(this))
       this.computeCounters()
     })
   }
@@ -85,6 +103,7 @@ class App extends React.Component {
   }
 
   changeSymbol(e, symbol) {
+    console.log("changeSymbol")
     e.preventDefault()
     this.setState({
       activeSymbol: symbol
@@ -92,6 +111,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log("render main")
     return (
        <div>
           <nav className="navbar navbar-default">
@@ -100,9 +120,6 @@ class App extends React.Component {
                 <a className="navbar-brand" href="#">Ether Wager</a>
               </div>
               <ul className="nav navbar-nav pull-right">
-                <li>
-                  <a href="http://github.com/romanBrodetski/cfd.market" target="_blanc">Github</a>
-                </li>
                 <li>
                   <a href="#" data-toggle="modal" data-target="#help">Help</a>
                 </li>

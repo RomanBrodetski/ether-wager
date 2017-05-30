@@ -4,8 +4,8 @@ class OrdersDAO {
       Promise.all(_.range(1, lastOrderId.toNumber() + 1).map((id) => CfdMarket.orders(id).then(order => [order, id])))
     )
     .then((orders) => _.chain(orders)
+      .filter((order) => order[0][3].toNumber() != 0)
       .map((order) => new Order(order[0], order[1]))
-      .filter((order) => !(order.isNull()))
       .sortBy((order) => order.limit)
       .indexBy("id")
       .value()
@@ -13,7 +13,14 @@ class OrdersDAO {
   }
 
   static loadOrder(id) {
-    return CfdMarket.orders(id).then(order => new Order(order, id))
+    return CfdMarket.orders(id).then(order => {
+      console.log(`loaded order with id ${id}:`)
+      console.log(order)
+      if (order[0][3] > 0) {
+        console.log("returning it...")
+        return new Order(order, id)
+      }
+    })
   }
 
   static createOrder(collateral, symbol, oracle, long, spot, premium, priceLimit, timestampLimit, leverage) {
@@ -23,7 +30,7 @@ class OrdersDAO {
         long,
         leverage,
         spot ? premium * 100 : 0, //percentages -> basis points
-        spot ? 0 : priceLimit * 100, //dollars -> cents
+        spot ? 0 : priceLimit * 10000, //units -> milis
         timestampLimit,
         {value: new web3.BigNumber(collateral).times(Math.pow(10, 18)), gas: 300000} //eth -> wei
       )

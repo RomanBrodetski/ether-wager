@@ -17,7 +17,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         uint    collateral;
         uint8   leverage;
         uint64  premiumBp; // price as the percentage of the spot price in basis points (10000bp == 100%)
-        uint64  strikeCents; // should only be set if spot == false
+        uint64  strikeMilis; // should only be set if spot == false
         uint    expiration; // timestamp
         address owner;
     }
@@ -32,12 +32,12 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         bool   long,
         uint8  leverage,
         uint64 premiumBp,
-        uint64 strikeCents,
+        uint64 strikeMilis,
         uint   expiration
     ) payable returns (uint) {
-        assert(strikeCents == 0 && premiumBp != 0 || strikeCents > 0 && premiumBp == 0);
+        assert(strikeMilis == 0 && premiumBp != 0 || strikeMilis > 0 && premiumBp == 0);
         assert(premiumBp == 0 || premiumBp <= 10000 + maxPremium && premiumBp >= maxPremium);
-        assert(strikeCents == 0 || 2 * msg.value * strikeCents / strikeCents == 2 * msg.value);
+        assert(strikeMilis == 0 || 2 * msg.value * strikeMilis / strikeMilis == 2 * msg.value);
         assert(msg.value >= minCollateral);
         assert(leverage  <=  10);
 
@@ -48,7 +48,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
             msg.value,
             leverage,
             premiumBp,
-            strikeCents,
+            strikeMilis,
             expiration,
             msg.sender);
 

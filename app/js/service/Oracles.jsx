@@ -1,6 +1,18 @@
 class Oracles {
+  static getSymbolByBlockchain(oracleArg, oracleType) {
+    return _(Symbols).find((symbol) => symbol.oracleArg == oracleArg && Oracles.toBlockchain(symbol.oracleType) == oracleType).symbol
+  }
+
+  static elements() {
+    return ["Yahoo", "CryptoUsd", "CryptoBtc"]
+  }
+
   static toBlockchain(oracle) {
-    return _(["Yahoo", "CryptoUsd", "CryptoBtc"]).indexOf(oracle);
+    return _(this.elements()).indexOf(oracle);
+  }
+
+  static fromBlockchain(index) {
+    return this.elements()[oracle];
   }
 
   static getOracleInfo(symbol, oracle) {

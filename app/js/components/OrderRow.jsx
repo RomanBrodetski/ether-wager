@@ -23,7 +23,6 @@ class OrderRow extends React.Component {
       loading: true
     });
 
-    // should this be also added to success variant 'this.props.onTrade'
     OrdersDAO
       .trade(this.props.order, new web3.BigNumber(this.state.positionAmount).times(Math.pow(10, 18)))
       .then(
@@ -63,10 +62,11 @@ class OrderRow extends React.Component {
   setAmount(event) {
     const minCollateral = 0.05
     let col = this.props.order.collateralETH;
-    let positionAmount = event.target.value >= col ? col :
+    let positionAmount = col < minCollateral * 2 ? col :
+                        (event.target.value >= col ? col :
                         (event.target.value >= col - minCollateral ? col - minCollateral :
                         (event.target.value <= minCollateral ? minCollateral : event.target.value)
-                        );
+                        ));
 
 
     this.setState({
@@ -100,6 +100,7 @@ class OrderRow extends React.Component {
   }
 
   render() {
+    console.log("render order row")
     let date = new Date(this.props.order.timestampLimit * 1000);
     let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
 
@@ -109,7 +110,7 @@ class OrderRow extends React.Component {
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
         <td>{this.props.order.leverage}x</td>
         <td>{this.props.order.spot ? (
-            this.props.oracle.price.toString() + (this.props.order.premiumBp > 100 ? " + " : " - ") + Math.abs(this.props.order.premiumBp - 100) + "% = " + MathUtils.round(this.props.oracle.price * this.props.order.premiumBp / 100, 2).toString()
+            (this.props.oracle.price || "").toString() + (this.props.order.premiumBp > 100 ? " + " : " - ") + Math.abs(this.props.order.premiumBp - 100) + "% = " + MathUtils.round(this.props.oracle.price * this.props.order.premiumBp / 100, 4).toString()
           ) : (
             <div>
               {this.props.order.limit}

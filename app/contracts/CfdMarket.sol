@@ -15,7 +15,7 @@ contract CfdMarket is OrdersManager {
     }
 
     struct Exercise {
-        uint expirationPriceCents; // price returned by the oracle
+        uint expirationPriceMilis; // price returned by the oracle
         uint longClaim; // wei won by the longing party
         uint shortClaim; // wei won by the shorting party
     }
@@ -26,7 +26,7 @@ contract CfdMarket is OrdersManager {
         address short;
         address long;
         uint expirationTime;
-        uint priceCents; // strike price
+        uint priceMilis; // strike price
         uint collateral; // each party's collateral
         uint8 leverage;
         bool executed;
@@ -75,7 +75,7 @@ contract CfdMarket is OrdersManager {
         OracleRequest memory request = oracleRequests[myId];
         assert(request.id > 0);
         delete oracleRequests[myId];
-        uint value = parseInt(res, 2);
+        uint value = parseInt(res, 4);
         if (request.isPosition) {
 
             Position pos = positions[request.id];
@@ -86,7 +86,7 @@ contract CfdMarket is OrdersManager {
 
             uint total = (2 * pos.collateral - pos.oracleComission);
             uint base = total / 2;
-            uint longClaim = min(base + (base * value / pos.priceCents - base) * pos.leverage, total);
+            uint longClaim = min(base + (base * value / pos.priceMilis - base) * pos.leverage, total);
 
             Exercise memory ex = Exercise(value, longClaim, total - longClaim);
             assert(ex.longClaim + ex.shortClaim + pos.oracleComission == 2 * pos.collateral);
@@ -144,7 +144,7 @@ contract CfdMarket is OrdersManager {
             bytes32 myId = oraclize_query("URL", buildOracleUrl(order.symbol, order.oracle), callbackGasLimit);
             oracleRequests[myId] = OracleRequest(false, id, countrerparty, oracleComission);
         } else { //price is fixed
-            createPositionFromOrder(id, order, countrerparty, order.strikeCents, 0);
+            createPositionFromOrder(id, order, countrerparty, order.strikeMilis, 0);
         }
     }
 

@@ -49,8 +49,8 @@ class SelectSymbol extends React.Component {
                   {symbolObj.caption}
                   <span className='clearfix' style={{position:'relative',bottom:'2px',float:'right'}}>
                     {this.spanIfPresent(this.totalOrders(symbolObj.symbol), "label label-default", "total orders")}
-                    {this.spanIfPresent(this.long(symbolObj.symbol), "label label-success", "my long orders and positions")}
-                    {this.spanIfPresent(this.short(symbolObj.symbol), "label label-warning", "my short orders and positions")}
+                    {this.spanIfPresent(this.long(symbolObj.symbol), "label label-success", "my long orders")}
+                    {this.spanIfPresent(this.short(symbolObj.symbol), "label label-warning", "my short orders")}
                   </span>
                 </a>
               </li>
