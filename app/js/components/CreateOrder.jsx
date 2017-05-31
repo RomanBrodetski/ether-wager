@@ -161,7 +161,6 @@ class CreateOrder extends React.Component {
                   : <div className="form-group">
                       <div className="input-group">
                         <input onChange={this.handleInputChange} type="number" className="form-control" name="limit" placeholder="Price" value={this.state.limit} min="0.01" step="1"/>
-                        <span className="input-group-addon"><i className="fa fa-usd" aria-hidden="true"></i></span>
                       </div>
                     </div>
                 }

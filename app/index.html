@@ -14,7 +14,51 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
   </head>
   <body>
-    <div id="root"></div>
+  <div id="root"></div>
     <script src="js/app.js"></script>
+   <!--  <div class="loading hide tab-content"><h5 class="text-center"><i class="fa fa-spinner fa-spin" aria-hidden="true"></i> Loading</h5></div>
+    <script>
+      $.get("http://localhost:8545").always(function(r) {
+        if (r.status > 0 || typeof web3 !== 'undefined') {
+          $(".loading").removeClass("hide")
+          $.getScript("js/app.js")
+        } else {
+          $(".fallback").removeClass("hide")
+        }
+      });
+    </script>
+    <div>
+      <div class="fallback hide">
+          <nav class="navbar navbar-default">
+            <div class="container-fluid">
+              <div class="navbar-header">
+                <a class="navbar-brand" href="#">Ether Wager</a>
+              </div>
+              <ul class="nav navbar-nav pull-right">
+                <li>
+
+                </li>
+              </ul>
+            </div>
+          </nav>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-offset-2 col-md-8">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <div class="jumbotron text-center mb0">
+                      <h1>Not connected to Ethereum</h1>
+                      <br />
+                      <br />
+                      <p>Ether Wager is currently deployed in <strong>Kovan</strong> test ethereum network.
+                         Please make sure that it is selected in your browser extention or your Ethereum node is properly set.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
   </body>
 </html>

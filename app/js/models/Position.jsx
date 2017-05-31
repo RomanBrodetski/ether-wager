@@ -21,15 +21,17 @@ class Position {
     this.shortClaim = blockchainEx[2].toNumber()
 
     this.oracleRequested = oracleRequested
-    this.own = this.longAddress == web3.eth.defaultAccount || this.shortAddress == web3.eth.defaultAccount
-    this.long = this.own && this.longAddress == web3.eth.defaultAccount
+    this.own = this.longAddress == web3.eth.accounts[0] || this.shortAddress == web3.eth.accounts[0]
+    this.long = this.own && this.longAddress == web3.eth.accounts[0]
     this.price = this.priceMilis / 10000
     this.expirationPrice = this.expirationPriceMilis / 10000
     this.collateralETH = this.collateral / Math.pow(10, 18)
     this.oracleComissionETH = this.oracleComission / Math.pow(10, 18)
-    this.state = this.computeState();
 
     this.canExecute = !this.executed && !this.oracleRequested && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
+
+    this.state = this.computeState();
+
   }
 
   isNull() {

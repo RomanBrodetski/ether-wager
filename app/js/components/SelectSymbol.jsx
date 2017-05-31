@@ -60,7 +60,7 @@ class SelectSymbol extends React.Component {
         <div className="panel-body">
           <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             { _(_(Object.values(this.props.symbols)).groupBy('group')).map((group) => (
-              <div>
+              <div key={group[0].group}>
                 <div className="panel-heading" style={{borderBottom:'1px solid #dddddd',cursor:'pointer'}} onClick={(e) => this.toggle(e, group[0].group)}>
                   <h4 className="panel-title">
                     {group[0].group}

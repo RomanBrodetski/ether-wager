@@ -15,10 +15,20 @@ class Order {
     this.limitMilis = blockchainOrder[6].toNumber()
     this.timestampLimit = blockchainOrder[7].toNumber()
     this.owner = blockchainOrder[8].toString()
-
+    this.own = this.owner === web3.eth.accounts[0]
     this.spot = this.premiumBp != 0
     this.limit = this.limitMilis / 10000
     this.collateralETH = this.collateral / Math.pow(10, 18)
+  }
+
+  projectedPrice(oraclePrice) {
+    if (this.spot) {
+      if (oraclePrice) {
+        return oraclePrice * this.premiumBp / 100
+      }
+    } else {
+      return this.limit
+    }
   }
 
   isNull() {

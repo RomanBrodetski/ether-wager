@@ -21,13 +21,12 @@ class App extends React.Component {
   handleBlockchainOrderEvent(event) {
     console.log("handleBlockchainOrderEvent")
     OrdersDAO.loadOrder(event.args.id.toNumber()).then((order) => {
-      console.log("order loaded in App.jsx. Here it is:")
       console.log(order)
       if (order) {
         console.log("upd")
         this.setState({
           orders: Object.assign(this.state.orders, {[order.id]: order})
-        })
+        }, this.computeCounters)
       } else {
         console.log("rem")
         this.setState({
@@ -57,7 +56,6 @@ class App extends React.Component {
       return Oracles.getOracleInfo(symbolObj.oracleArg, symbolObj.oracleType).then((info) => Object.assign(info, {symbol: symbol}))
     }))
     .then((data) => {
-      console.log("setting oracles: " + data.toString())
       this.setState({
         oracles: Object.assign(this.state.oracles, _(data).indexBy("symbol"))
       })
@@ -70,8 +68,8 @@ class App extends React.Component {
         Object.assign(this.state.counters[symbol] || {}, {
           symbol: symbol,
           totalOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol).length,
-          myLongOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol && o.owner == web3.eth.defaultAccount && o.long).length,
-          myShortOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol && o.owner == web3.eth.defaultAccount && !o.long).length,
+          myLongOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol && o.owner == web3.eth.accounts[0] && o.long).length,
+          myShortOrders: Object.values(this.state.orders || {}).filter((o) => o.symbol == symbol && o.owner == web3.eth.accounts[0] && !o.long).length,
           longPositions: Object.values(this.state.positions || {}).filter((o) => o.symbol == symbol && o.own && o.long).length,
           shortPositions: Object.values(this.state.positions || {}).filter((o) => o.symbol == symbol && o.own && !o.long).length
         })
@@ -137,7 +135,7 @@ class App extends React.Component {
                       loadBlockchainData={this.loadBlockchainData}
                       oracles={this.state.oracles}
                       activeSymbol={this.state.activeSymbol}
-                      positions={this.state.positions} />
+                      positions={this.state.positions && _(this.state.positions).filter((pos) => pos.own)} />
                   </div>
                 </div>
                 <div className="row">

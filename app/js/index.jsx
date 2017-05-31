@@ -1,47 +1,7 @@
 var ShowDecimals = 4
 
-
+$(".loading").hide()
 var Symbols = [
-  {
-    caption: "AAPL",
-    symbol: "AAPL",
-    tv: "NASDAQ:AAPL",
-    oracleArg: "AAPL",
-    oracleType: "Yahoo",
-    group: "stocks"
-  },
-  {
-    caption: "MSFT",
-    symbol: "MSFT",
-    tv: "NASDAQ:MSFT",
-    oracleArg: "MSFT",
-    oracleType: "Yahoo",
-    group: "stocks"
-  },
-  {
-    caption: "AMZN",
-    symbol: "AMZN",
-    tv: "NASDAQ:AMZN",
-    oracleArg: "AMZN",
-    oracleType: "Yahoo",
-    group: "stocks"
-  },
-  {
-    caption: "TSLA",
-    symbol: "TSLA",
-    tv: "NASDAQ:TSLA",
-    oracleArg: "TSLA",
-    oracleType: "Yahoo",
-    group: "stocks"
-  },
-  {
-    caption: "NFLX",
-    symbol: "NFLX",
-    tv: "NASDAQ:NFLX",
-    oracleArg: "NFLX",
-    oracleType: "Yahoo",
-    group: "stocks"
-  },
   {
     caption: "ETH/USD",
     symbol: "ETH/USD",
@@ -154,6 +114,46 @@ var Symbols = [
     oracleType: "CryptoBtc",
     group: "crypto/btc"
   },
+  {
+    caption: "AAPL",
+    symbol: "AAPL",
+    tv: "NASDAQ:AAPL",
+    oracleArg: "AAPL",
+    oracleType: "Yahoo",
+    group: "stocks"
+  },
+  {
+    caption: "MSFT",
+    symbol: "MSFT",
+    tv: "NASDAQ:MSFT",
+    oracleArg: "MSFT",
+    oracleType: "Yahoo",
+    group: "stocks"
+  },
+  {
+    caption: "AMZN",
+    symbol: "AMZN",
+    tv: "NASDAQ:AMZN",
+    oracleArg: "AMZN",
+    oracleType: "Yahoo",
+    group: "stocks"
+  },
+  {
+    caption: "TSLA",
+    symbol: "TSLA",
+    tv: "NASDAQ:TSLA",
+    oracleArg: "TSLA",
+    oracleType: "Yahoo",
+    group: "stocks"
+  },
+  {
+    caption: "NFLX",
+    symbol: "NFLX",
+    tv: "NASDAQ:NFLX",
+    oracleArg: "NFLX",
+    oracleType: "Yahoo",
+    group: "stocks"
+  }
 ]
 
 ReactDOM.render(<App symbols={Symbols}/>, document.getElementById('root'));

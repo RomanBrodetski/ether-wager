@@ -24,6 +24,8 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
 
     uint public lastOrderId;
 
+    mapping(uint => bool) public orderOracleRequested;
+
     mapping (uint => Order) public orders;
 
     function createOrder(
@@ -63,10 +65,12 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
 
     function cancelOrder(uint id) {
         Order order = orders[id];
+        assert(!orderOracleRequested[id]);
         assert(order.owner == msg.sender);
+        var amount = order.collateral;
         delete orders[id];
         UpdateOrder(id);
-        assert(order.owner.send(order.collateral));
+        assert(msg.sender.send(amount));
     }
 
     function nextOrderId() returns (uint) {

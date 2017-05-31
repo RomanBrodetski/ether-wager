@@ -7,11 +7,11 @@ class DefaultScreen extends React.Component {
             <div className="panel panel-default">
               <div className="panel-body">
                 <div className="jumbotron text-center mb0">
-                  <h1>Not connected to Ethereum</h1>
+                  <h1>Not connected to Kovan</h1>
                   <br />
                   <br />
                   <p>Ether Wager is currently deployed in <strong>Kovan</strong> test ethereum network.
-                     Please make sure that it is selected in your browser extention or your Ethereum node is connected to it.</p>
+                         Please make sure that it is selected in your browser extention or your Ethereum node is properly set.</p>
                 </div>
               </div>
             </div>

@@ -134,7 +134,7 @@ class PositionRow extends React.Component {
     return (
       <tr>
         <td>{this.props.position.state}</td>
-        <td><span className={"label label-" + (this.props.position.long ? "success" : "danger")}>{this.props.position.long ? "LONG" : "SHORT"}</span></td>
+        <td><span className={"label label-" + (this.props.position.long ? "success" : "warning")}>{this.props.position.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.position.symbol}</td>
         <td>{this.props.position.leverage}x</td>
         <td>{this.props.position.price}</td>

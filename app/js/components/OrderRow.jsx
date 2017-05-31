@@ -4,7 +4,6 @@ class OrderRow extends React.Component {
     super(props);
 
     this.state = {
-      loading: false,
       status: "none",
       positionAmount: this.props.order.collateral / Math.pow(10, 18)
     };
@@ -13,6 +12,8 @@ class OrderRow extends React.Component {
     this.trade = this.trade.bind(this);
     this.actions = this.actions.bind(this);
     this.setAmount = this.setAmount.bind(this);
+    this.price = this.price.bind(this);
+    this.input = this.input.bind(this);
   }
 
 
@@ -20,19 +21,14 @@ class OrderRow extends React.Component {
     e.preventDefault()
 
     this.setState({
-      loading: true
+      status: "loading"
     });
 
     OrdersDAO
       .trade(this.props.order, new web3.BigNumber(this.state.positionAmount).times(Math.pow(10, 18)))
       .then(
         () => this.setState({
-          loading: false,
-          status: "success"
-        }),
-        () => this.setState({
-          loading: false,
-          status: "fail"
+          status: "oracle"
         })
       );
   }
@@ -41,24 +37,12 @@ class OrderRow extends React.Component {
     e.preventDefault()
 
     this.setState({
-      loading: true
+      status: "loading"
     });
 
-    OrdersDAO
-      .cancel(this.props.order.id)
-      .then(
-        () => this.setState({
-          loading: false,
-          status: "success"
-        }),
-        () => this.setState({
-          loading: false,
-          status: "fail"
-        })
-      );
+    OrdersDAO.cancel(this.props.order.id);
   }
 
-  // TODO: use positionAmount for creating a position
   setAmount(event) {
     const minCollateral = 0.05
     let col = this.props.order.collateralETH;
@@ -70,32 +54,56 @@ class OrderRow extends React.Component {
 
 
     this.setState({
-      positionAmount: MathUtils.round(positionAmount,4)
+      positionAmount: MathUtils.round(positionAmount, 4)
     })
   }
 
+  input() {
+    if (this.state.status == "none" && !this.props.order.own) {
+      return (
+        <input onChange={this.setAmount} onBlur={this.setAmount} className="form-control input-sm" type="number" placeholder="type your amount" style={{fontSize: '13px'}} value={this.state.positionAmount} min="0.01" max={this.props.order.collateral / Math.pow(10, 18)} step="0.01"/>
+      )
+    }
+  }
+
   actions() {
-    if (this.state.loading) {
+    if (this.state.status == "loading") {
       return (
         <span>processing <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
       )
+    } else if (this.state.status === "oracle") {
+      return (
+        <span>waiting for oracle <i className="fa fa-spinner fa-spin"></i></span>
+      )
     } else {
-      if (this.state.status === "fail") {
+      if (this.props.order.own) {
         return (
-          <span><i className="glyphicon glyphicon-remove text-danger"></i> fail</span>
-        )
-      } else if (this.state.status === "success") {
-        return (
-          <span><i className="fa fa-spinner fa-spin"></i> waiting for oracle</span>
+          <a href="#" onClick={this.cancel} className="btn btn-danger btn-sm">cancel order</a>
         )
       } else {
         return (
-          <div>
-            <a href="#" onClick={this.trade} className="btn btn-default btn-sm">trade</a>
-            {/* {this.props.order.owner == web3.eth.defaultAccount && <a href="#" onClick={this.cancel} className="btn btn-danger btn-sm">delete order</a>} */}
-          </div>
+          <a href="#" onClick={this.trade} className="btn btn-default btn-sm">trade</a>
         )
       }
+    }
+  }
+
+  price() {
+    if (this.props.order.spot) {
+      if (this.props.oracle.price) {
+        const sign = this.props.order.premiumBp > 100 ? "+" : "-"
+        const result = MathUtils.round(this.props.oracle.price * this.props.order.premiumBp / 100, 4)
+        return `${this.props.oracle.price} ${sign} ${Math.abs(this.props.order.premiumBp - 100)}% = ${result}`
+      } else {
+        return (<i className="fa fa-spinner fa-spin" aria-hidden="true"></i>)
+      }
+    } else {
+      return (
+        <div>
+          {this.props.order.limit}
+          <span className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>
+        </div>
+      )
     }
   }
 
@@ -109,18 +117,9 @@ class OrderRow extends React.Component {
         <td><span  className={"label label-" + (this.props.order.long ? "success" : "warning")}> {this.props.order.long ? "LONG" : "SHORT"}</span></td>
         <td>{this.props.order.collateral / Math.pow(10, 18)}</td>
         <td>{this.props.order.leverage}x</td>
-        <td>{this.props.order.spot ? (
-            (this.props.oracle.price || "").toString() + (this.props.order.premiumBp > 100 ? " + " : " - ") + Math.abs(this.props.order.premiumBp - 100) + "% = " + MathUtils.round(this.props.oracle.price * this.props.order.premiumBp / 100, 4).toString()
-          ) : (
-            <div>
-              {this.props.order.limit}
-              <span className="glyphicon glyphicon-lock" style={{paddingLeft: '5px', color: '#aaa', fontSize: '11px'}}></span>
-            </div>
-          )}</td>
+        <td>{this.price()}</td>
         <td>{date.toLocaleDateString('de-DE', options)}</td>
-        <td>
-          <input onChange={this.setAmount} onBlur={this.setAmount} className="form-control input-sm" type="number" placeholder="type your amount" style={{fontSize: '13px'}} value={this.state.positionAmount} min="0.01" max={this.props.order.collateral / Math.pow(10, 18)} step="0.01"/>
-        </td>
+        <td>{this.input()}</td>
         <td>{this.actions()}</td>
       </tr>
     );

@@ -14,10 +14,7 @@ class OrdersDAO {
 
   static loadOrder(id) {
     return CfdMarket.orders(id).then(order => {
-      console.log(`loaded order with id ${id}:`)
-      console.log(order)
-      if (order[0][3] > 0) {
-        console.log("returning it...")
+      if (order[3].toNumber() > 0) {
         return new Order(order, id)
       }
     })

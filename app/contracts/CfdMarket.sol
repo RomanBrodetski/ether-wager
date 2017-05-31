@@ -40,7 +40,6 @@ contract CfdMarket is OrdersManager {
 
     mapping(bytes32 => OracleRequest) public oracleRequests;
 
-    mapping(uint => bool) public orderOracleRequested;
     mapping(uint => bool) public positionOracleRequested;
 
     function partialTrade(uint oldOrderId) payable {
@@ -124,7 +123,7 @@ contract CfdMarket is OrdersManager {
             uint longShare = ex.longClaim;
             ex.longClaim = 0;
             if (!pos.long.send(longShare)) throw;
-        } else if (ex.shortClaim > 0 && msg.sender == pos.long) {
+        } else if (ex.shortClaim > 0 && msg.sender == pos.short) {
             uint shortShare = ex.shortClaim;
             ex.shortClaim = 0;
             if (!pos.short.send(shortShare)) throw;

@@ -20,12 +20,12 @@ class OrderBook extends React.Component {
                   <th>Leverage</th>
                   <th>Strike Price</th>
                   <th>Expires</th>
-                  <th> <Tooltip title="Desired collateral for partial trades. Partial trade is only possible if the residual value is more than the minimum collateral " /></th>
+                  <th> <Tooltip title="Desired collateral for partial trades. Partial trade is only possible if the residual value is more than the minimum collateral (0.05 ETH)" /></th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
-                {this.props.orders.map((order) => (
+                {_(this.props.orders).sortBy((o) => o.projectedPrice(this.props.oracle.price)).map((order) => (
                   <OrderRow order={order} onTrade={this.props.onTrade} key={order.id} oracle={this.props.oracle}/>
                 ))}
               </tbody>
