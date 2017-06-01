@@ -186,6 +186,7 @@ class CreateOrder extends React.Component {
                 </div>
                 <div className="form-group">
                   <label>Expiration</label>
+                  &nbsp;<Tooltip title="After this point in time any party will be able to exercise the contract" />
                   <div className="input-group">
                     <input onFocus={this.handleInputFocus} onChange={this.handleInputChange} type="datetime-local" className="form-control" name="date" placeholder="Set your date" value={this.state.date} />
                   </div>

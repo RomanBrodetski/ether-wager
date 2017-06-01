@@ -156,4 +156,4 @@ var Symbols = [
   }
 ]
 
-ReactDOM.render(<App symbols={Symbols}/>, document.getElementById('root'));
+setTimeout(() => ReactDOM.render(<Wrapper symbols={Symbols}/>, document.getElementById('root')), 1000)

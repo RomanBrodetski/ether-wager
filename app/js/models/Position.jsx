@@ -27,11 +27,8 @@ class Position {
     this.expirationPrice = this.expirationPriceMilis / 10000
     this.collateralETH = this.collateral / Math.pow(10, 18)
     this.oracleComissionETH = this.oracleComission / Math.pow(10, 18)
-
-    this.canExecute = !this.executed && !this.oracleRequested && web3.eth.getBlock(web3.eth.blockNumber).timestamp > this.expiration
-
+    this.canExecute = !this.executed && !this.oracleRequested && Math.floor(Date.now() / 1000) > this.expiration
     this.state = this.computeState();
-
   }
 
   isNull() {

@@ -111,77 +111,56 @@ class App extends React.Component {
   render() {
     console.log("render main")
     return (
-       <div>
-          <nav className="navbar navbar-default">
-            <div className="container-fluid">
-              <div className="navbar-header">
-                <a className="navbar-brand ether-wager" href="#">
-                  Ether Wager
-                </a>
-              </div>
-              <ul className="nav navbar-nav pull-right">
-                <li>
-                  <a href="#" data-toggle="modal" data-target="#help">Help</a>
-                </li>
-              </ul>
-            </div>
-          </nav>
-          <Help />
-          {
-            false
-            ? <DefaultScreen />
-            : <div className="container-fluid">
-                <div className="row">
-                  <div className="col-md-12">
-                    <PositionsOverview
-                      loadBlockchainData={this.loadBlockchainData}
-                      oracles={this.state.oracles}
-                      activeSymbol={this.state.activeSymbol}
-                      positions={this.state.positions && _(this.state.positions).filter((pos) => pos.own)} />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-2">
-                    <SelectSymbol
-                      counters={this.state.counters}
-                      changeSymbol={this.changeSymbol}
-                      activeSymbol={this.state.activeSymbol}
-                      symbols={this.props.symbols} />
-                  </div>
-                  <div className="col-md-7">
-                    <div className="panel panel-default">
-                      <div className="panel-heading">Open Orders for <strong>{this.state.symbols[this.state.activeSymbol].symbol}</strong></div>
-                      <div className="panel-body">
-                        <div className="row">
-                          <div className="col-md-12">
-                            {
-                              this.state.orders === undefined
-                                ? <Loading />
-                                : <OrderBook
-                                    oracle={this.state.oracles[this.state.activeSymbol] || {}}
-                                    orders={Object.values(this.state.orders).filter((order) => order.symbol === this.state.activeSymbol)}
-                                    onTrade={this.loadBlockchainData} />
-                            }
-                            <TradingView symbol={this.state.symbols[this.state.activeSymbol].tv} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-3">
-                    <div className="row">
-                      <div className="col-md-12">
-                        <CreateOrder
-                          oracle={this.state.oracles[this.state.activeSymbol] || {oracle: "...", price: "..."}}
-                          symbol={this.state.symbols[this.state.activeSymbol]}
-                          onTrade={this.loadBlockchainData} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            }
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-12">
+          <PositionsOverview
+            loadBlockchainData={this.loadBlockchainData}
+            oracles={this.state.oracles}
+            activeSymbol={this.state.activeSymbol}
+            positions={this.state.positions && _(this.state.positions).filter((pos) => pos.own)} />
         </div>
+      </div>
+      <div className="row">
+        <div className="col-md-2">
+          <SelectSymbol
+            counters={this.state.counters}
+            changeSymbol={this.changeSymbol}
+            activeSymbol={this.state.activeSymbol}
+            symbols={this.props.symbols} />
+        </div>
+        <div className="col-md-7">
+          <div className="panel panel-default">
+            <div className="panel-heading">Open Orders for <strong>{this.state.symbols[this.state.activeSymbol].symbol}</strong></div>
+            <div className="panel-body">
+              <div className="row">
+                <div className="col-md-12">
+                  {
+                    this.state.orders === undefined
+                      ? <Loading />
+                      : <OrderBook
+                          oracle={this.state.oracles[this.state.activeSymbol] || {}}
+                          orders={Object.values(this.state.orders).filter((order) => order.symbol === this.state.activeSymbol)}
+                          onTrade={this.loadBlockchainData} />
+                  }
+                  <TradingView symbol={this.state.symbols[this.state.activeSymbol].tv} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="row">
+            <div className="col-md-12">
+              <CreateOrder
+                oracle={this.state.oracles[this.state.activeSymbol] || {oracle: "...", price: "..."}}
+                symbol={this.state.symbols[this.state.activeSymbol]}
+                onTrade={this.loadBlockchainData} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     )
   }
 }
