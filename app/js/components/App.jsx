@@ -115,7 +115,9 @@ class App extends React.Component {
           <nav className="navbar navbar-default">
             <div className="container-fluid">
               <div className="navbar-header">
-                <a className="navbar-brand" href="#">Ether Wager</a>
+                <a className="navbar-brand ether-wager" href="#">
+                  Ether Wager
+                </a>
               </div>
               <ul className="nav navbar-nav pull-right">
                 <li>
