@@ -25,6 +25,28 @@
       "password": "config/testnet/password"
     }
   },
+  "kovan": {
+    "enabled": true,
+    "networkType": "testnet",
+    "light": true,
+    "rpcHost": "localhost",
+    "rpcPort": 8545,
+    "rpcCorsDomain": "http://localhost:8000",
+    "account": {
+      "password": "config/testnet/password"
+    }
+  },
+  "rinkeby": {
+    "enabled": true,
+    "networkType": "testnet",
+    "light": true,
+    "rpcHost": "localhost",
+    "rpcPort": 8545,
+    "rpcCorsDomain": "http://localhost:8000",
+    "account": {
+      "password": "config/testnet/password"
+    }
+  },
   "livenet": {
     "enabled": true,
     "networkType": "livenet",

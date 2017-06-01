@@ -11,7 +11,7 @@ contract CfdMarket is OrdersManager {
         bool isPosition; // true -> exersising, false -> checking spot price for an order
         uint id;
         address countrerparty; // only set for orders
-        uint oracleComission; // only set for orders
+        uint oracleComission;
     }
 
     struct Exercise {
@@ -60,10 +60,8 @@ contract CfdMarket is OrdersManager {
     }
 
     function trade(uint orderId) payable  {
-        //syncronized?
         Order order = orders[orderId];
         assert(msg.value == order.collateral);
-        // assert(msg.sender != order.owner)
 
         internalTrade(orderId, order, msg.sender);
     }

@@ -4,7 +4,7 @@
     "contracts": {
     }
   },
-  "testnet": {
+  "kovan": {
     "gas": "auto",
     "contracts": {
       "EventfulMarket": {"deploy": false},
@@ -14,7 +14,26 @@
       "TestableCfdMarket": {"deploy": false},
       "OraclizeI": {"deploy": false},
       "OraclizeAddrResolverI": {"deploy": false},
-      "usingOraclize": {"deploy": false}
+      "usingOraclize": {"deploy": false},
+      "CfdMarket": {
+        "address": "0x123456"
+      }
+    }
+  },
+  "rinkeby": {
+    "gas": "auto",
+    "contracts": {
+      "EventfulMarket": {"deploy": false},
+      "OrdersManager": {"deploy": false},
+      "SafeMath": {"deploy": false},
+      "OracleUrls": {"deploy": false},
+      "TestableCfdMarket": {"deploy": false},
+      "OraclizeI": {"deploy": false},
+      "OraclizeAddrResolverI": {"deploy": false},
+      "usingOraclize": {"deploy": false},
+      "CfdMarket": {
+        "address": "0x123456"
+      }
     }
   }
 }
