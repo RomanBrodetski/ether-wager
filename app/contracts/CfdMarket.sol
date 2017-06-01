@@ -115,20 +115,20 @@ contract CfdMarket is OrdersManager {
     function claim(uint positionId) {
         Position pos = positions[positionId];
         Exercise ex  = exercises[positionId];
+        uint share;
 
         if (!pos.executed) throw;
         if (ex.longClaim > 0 && msg.sender == pos.long) {
-            uint longShare = ex.longClaim;
+            share = ex.longClaim;
             ex.longClaim = 0;
-            if (!pos.long.send(longShare)) throw;
         } else if (ex.shortClaim > 0 && msg.sender == pos.short) {
-            uint shortShare = ex.shortClaim;
+            share = ex.shortClaim;
             ex.shortClaim = 0;
-            if (!pos.short.send(shortShare)) throw;
         } else throw;
 
-        UpdatePosition(positionId);
         exercises[positionId] = ex;
+        UpdatePosition(positionId);
+        assert(pos.long.send(share));
     }
 
     function internalTrade(uint id, Order order, address countrerparty) internal {

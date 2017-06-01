@@ -16,7 +16,7 @@
       "OraclizeAddrResolverI": {"deploy": false},
       "usingOraclize": {"deploy": false},
       "CfdMarket": {
-        "address": "0x123456"
+        "address": "0xeeecf1ab7657c3b5d5570dee7206cfbfd15773c0"
       }
     }
   },
@@ -32,7 +32,7 @@
       "OraclizeAddrResolverI": {"deploy": false},
       "usingOraclize": {"deploy": false},
       "CfdMarket": {
-        "address": "0x123456"
+        "address": "0xda8f2767f9f7e4e7b5c043af87721302682232ad"
       }
     }
   }

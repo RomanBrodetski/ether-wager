@@ -22,7 +22,7 @@ class Wrapper extends React.Component {
 
   checkKovanConnection() {
     web3.eth.getBlock(0, (e,r) => {
-      if (r.hash == "0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9") {
+      if (true || r.hash == "0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9") {
         this.checkAccountUnlocked()
       } else {
         this.setState({
