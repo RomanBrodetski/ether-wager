@@ -1,11 +1,15 @@
 class OrdersDAO {
   static loadOrders() {
     return CfdMarket.lastOrderId().then((lastOrderId) =>
-      Promise.all(_.range(1, lastOrderId.toNumber() + 1).map((id) => CfdMarket.orders(id).then(order => [order, id])))
+      Promise.all(_.range(1, lastOrderId.toNumber() + 1).map((id) => {
+        const orderPromise = CfdMarket.orders(id).then(order => [order, id])
+        const oraclePromise = CfdMarket.orderOracleRequested(id)
+        return Promise.all([orderPromise, oraclePromise])
+      }))
     )
     .then((orders) => _.chain(orders)
-      .filter((order) => order[0][3].toNumber() != 0)
-      .map((order) => new Order(order[0], order[1]))
+      .filter((order) => order[0][0][3].toNumber() != 0)
+      .map((order) => new Order(order[0][0], order[0][1], order[1]))
       .sortBy((order) => order.limit)
       .indexBy("id")
       .value()
@@ -13,10 +17,18 @@ class OrdersDAO {
   }
 
   static loadOrder(id) {
-    return CfdMarket.orders(id).then(order => {
-      if (order[3].toNumber() > 0) {
-        return new Order(order, id)
-      }
+    return CfdMarket.orders(id).then((order) => {
+      return CfdMarket.orderOracleRequested(id).then((oracleRequested) =>
+        {
+          console.log("order: ")
+          console.log(order)
+          console.log("oracleRequested: ")
+          console.log(oracleRequested)
+          if (order[3].toNumber() > 0) {
+            return new Order(order, id, oracleRequested)
+          }
+        }
+      )
     })
   }
 

@@ -20,21 +20,33 @@ class Wrapper extends React.Component {
     }
   }
 
-  checkKovanConnection() {
+  checkTestnetConnection() {
     web3.eth.getBlock(0, (e,r) => {
-      if (true || r.hash == "0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9") {
-        this.checkAccountUnlocked()
+      if (CfdMarket.address == "0x474d10bfb138bd64b93187c24e0df32c34561eeb") { //kovan
+        if (r.hash == "0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9") {
+          this.checkAccountUnlocked()
+        } else {
+          this.setState({
+            status: "wrong_network_kovan"
+          })
+        }
       } else {
-        this.setState({
-          status: "wrong_network"
-        })
+        if (CfdMarket.address == "0xda8f2767f9f7e4e7b5c043af87721302682232ad") { //rinkeby
+          if (r.hash == "0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177") {
+            this.checkAccountUnlocked()
+          } else {
+            this.setState({
+              status: "wrong_network_rinkeby"
+            })
+          }
+        }
       }
     })
   }
 
   checkConnection() {
     if (web3.currentProvider.isConnected()) {
-      this.checkKovanConnection()
+      this.checkTestnetConnection()
     } else {
       this.setState({
         status: "disconnected"

@@ -1252,7 +1252,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
 
 contract CfdMarket is OrdersManager {
 
-    uint constant callbackGasLimit = 300000;
+    uint constant callbackGasLimit = 400000;
 
     struct OracleRequest {
         bool isPosition; // true -> exersising, false -> checking spot price for an order

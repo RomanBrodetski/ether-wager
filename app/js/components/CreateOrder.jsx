@@ -196,7 +196,7 @@ class CreateOrder extends React.Component {
                   {this.state.isLoading && <i className="fa fa-spinner fa-spin" aria-hidden="true"></i>}
                 </button>
                 {this.state.status === "fail" && <p><i className="glyphicon glyphicon-remove text-danger"></i> the order was not created</p>}
-                {this.state.status === "success" && <p><i className="glyphicon glyphicon-ok text-success"></i> the order is successfully created</p>}
+                {this.state.status === "success" && <p><i className="glyphicon glyphicon-ok text-success"></i> the order will show up in the list shortly</p>}
               </div>
             </div>
           </form>

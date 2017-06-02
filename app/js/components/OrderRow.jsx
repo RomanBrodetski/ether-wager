@@ -26,11 +26,7 @@ class OrderRow extends React.Component {
 
     OrdersDAO
       .trade(this.props.order, new web3.BigNumber(this.state.positionAmount).times(Math.pow(10, 18)))
-      .then(
-        () => this.setState({
-          status: "oracle"
-        })
-      );
+      .then(() => console.log("success"), (e) => console.log(e))
   }
 
   cancel(e, id) {
@@ -59,7 +55,7 @@ class OrderRow extends React.Component {
   }
 
   input() {
-    if (this.state.status == "none" && !this.props.order.own) {
+    if (this.state.status == "none" && !this.props.order.oracleRequested && !this.props.order.own) {
       return (
         <input onChange={this.setAmount} onBlur={this.setAmount} className="form-control input-sm" type="number" placeholder="type your amount" style={{fontSize: '13px'}} value={this.state.positionAmount} min="0.01" max={this.props.order.collateral / Math.pow(10, 18)} step="0.01"/>
       )
@@ -71,7 +67,7 @@ class OrderRow extends React.Component {
       return (
         <span>processing <i className="fa fa-spinner fa-spin" aria-hidden="true"></i></span>
       )
-    } else if (this.state.status === "oracle") {
+    } else if (this.props.order.oracleRequested) {
       return (
         <span>waiting for oracle <i className="fa fa-spinner fa-spin"></i></span>
       )
@@ -108,7 +104,6 @@ class OrderRow extends React.Component {
   }
 
   render() {
-    console.log("render order row")
     let date = new Date(this.props.order.timestampLimit * 1000);
     let options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
 

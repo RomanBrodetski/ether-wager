@@ -64,7 +64,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
     }
 
     function cancelOrder(uint id) {
-        Order order = orders[id];
+        Order memory order = orders[id];
         assert(!orderOracleRequested[id]);
         assert(order.owner == msg.sender);
         var amount = order.collateral;
@@ -73,7 +73,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         assert(msg.sender.send(amount));
     }
 
-    function nextOrderId() returns (uint) {
+    function nextOrderId() internal returns (uint) {
              return ++lastOrderId;
     }
 }

@@ -4,8 +4,10 @@ class NetworkError extends React.Component {
     switch (this.props.status) {
       case 'disconnected':
         return "Not connected to Ethereum"
-      case 'wrong_network':
+      case 'wrong_network_kovan':
         return "Not connected to Kovan"
+      case 'wrong_network_rinkeby':
+        return "Not connected to Rinkeby"
       case 'locked':
         return "Please unlock your account"
       case 'loading':
@@ -19,11 +21,18 @@ class NetworkError extends React.Component {
         return (
           <p>Looks like you are not connected to <strong>Ethereum</strong>. Please install Metamask browser extension or use a local RPC node and <a href="/">try again</a>.</p>
         )
-      case 'wrong_network':
+      case 'wrong_network_kovan':
         return (
           <div><p>Looks like you are not connected to the <strong>Kovan</strong> testnet. Please select Kovan in Metamask or run parity with
           the following keys:</p>
           <pre>parity --chain kovan --rpccorsdomain "*"</pre>
+          <p><a href="/">try again</a></p>
+          </div>
+        )
+      case 'wrong_network_rinkeby':
+        return (
+          <div><p>Looks like you are not connected to the <strong>Rinkeby</strong> testnet. Please select Rinkeby in Metamask or follow the <a href="https://www.rinkeby.io/">instructions</a>
+          for geth</p>
           <p><a href="/">try again</a></p>
           </div>
         )

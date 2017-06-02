@@ -109,7 +109,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log("render main")
     return (
     <div className="container-fluid">
       <div className="row">

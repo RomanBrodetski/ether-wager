@@ -1,12 +1,13 @@
 class Order {
-  constructor(blockchainOrder, id) {
-    console.log("order constructor invoked. Here is is")
+  constructor(blockchainOrder, id, oracleRequested) {
+    console.log("order constructor invoked. Here is is:")
     console.log(blockchainOrder)
     this.id = id
     this.symbolArg = web3.toUtf8(blockchainOrder[0].toString())
     this.oracle = blockchainOrder[1].toNumber()
 
     this.symbol = Oracles.getSymbolByBlockchain(this.symbolArg, this.oracle)
+    this.oracleRequested = oracleRequested
 
     this.long = blockchainOrder[2]
     this.collateral = blockchainOrder[3].toNumber()
