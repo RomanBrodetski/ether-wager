@@ -1015,6 +1015,9 @@ contract usingOraclize {
 }
 // </ORACLIZE_API>
 
+
+
+
 contract EventfulMarket {
 
     event OracleRespond(
@@ -1045,6 +1048,8 @@ contract EventfulMarket {
         uint id
     );
 }
+
+
 
 contract OracleUrls is usingOraclize{
 
@@ -1120,6 +1125,8 @@ contract OracleUrls is usingOraclize{
     }
 }
 
+
+
 contract SafeMath {
   function safeMul(uint a, uint b) internal returns (uint) {
     uint c = a * b;
@@ -1175,6 +1182,8 @@ contract SafeMath {
     }
   }
 }
+
+
 
 contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
 
@@ -1235,7 +1244,7 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
     }
 
     function cancelOrder(uint id) {
-        Order order = orders[id];
+        Order memory order = orders[id];
         assert(!orderOracleRequested[id]);
         assert(order.owner == msg.sender);
         var amount = order.collateral;
@@ -1244,11 +1253,10 @@ contract OrdersManager is SafeMath, EventfulMarket, OracleUrls {
         assert(msg.sender.send(amount));
     }
 
-    function nextOrderId() returns (uint) {
+    function nextOrderId() internal returns (uint) {
              return ++lastOrderId;
     }
 }
-
 
 contract CfdMarket is OrdersManager {
 
@@ -1307,7 +1315,7 @@ contract CfdMarket is OrdersManager {
     }
 
     function trade(uint orderId) payable  {
-        Order order = orders[orderId];
+        Order memory order = orders[orderId];
         assert(msg.value == order.collateral);
 
         internalTrade(orderId, order, msg.sender);
@@ -1322,7 +1330,7 @@ contract CfdMarket is OrdersManager {
         uint value = parseInt(res, 4);
         if (request.isPosition) {
 
-            Position pos = positions[request.id];
+            Position memory pos = positions[request.id];
             pos.executed = true;
             pos.oracleComission += request.oracleComission;
 
@@ -1339,20 +1347,20 @@ contract CfdMarket is OrdersManager {
             positions[request.id] = pos;
             exercises[request.id] = ex;
         } else {
-            Order order = orders[request.id];
+            Order memory order = orders[request.id];
             assert(value * order.premiumBp / order.premiumBp == value);
             createPositionFromOrder(request.id, order, request.countrerparty, value * order.premiumBp / 10000, request.oracleComission);
         }
     }
 
     function execute(uint positionId) {
-        Position pos = positions[positionId];
+        Position memory pos = positions[positionId];
         assert(block.timestamp > pos.expirationTime);
         assert(!positionOracleRequested[positionId]);
 
         positionOracleRequested[positionId] = true;
         uint oracleComission = oraclize_getPrice("URL", callbackGasLimit);
-        assert (oracleComission + pos.oracleComission < pos.collateral);
+        assert(oracleComission + pos.oracleComission < pos.collateral);
 
         bytes32 myId = oraclize_query("URL", buildOracleUrl(pos.symbol, pos.oracle), callbackGasLimit);
         UpdatePosition(positionId);
@@ -1360,22 +1368,25 @@ contract CfdMarket is OrdersManager {
     }
 
     function claim(uint positionId) {
-        Position pos = positions[positionId];
-        Exercise ex  = exercises[positionId];
+        Position memory pos = positions[positionId];
+        Exercise memory ex  = exercises[positionId];
         uint share;
+        address target;
 
         if (!pos.executed) throw;
         if (ex.longClaim > 0 && msg.sender == pos.long) {
             share = ex.longClaim;
+            target = pos.long;
             ex.longClaim = 0;
         } else if (ex.shortClaim > 0 && msg.sender == pos.short) {
             share = ex.shortClaim;
+            target = pos.short;
             ex.shortClaim = 0;
         } else throw;
 
         exercises[positionId] = ex;
         UpdatePosition(positionId);
-        assert(pos.long.send(share));
+        assert(target.send(share));
     }
 
     function internalTrade(uint id, Order order, address countrerparty) internal {
@@ -1417,3 +1428,5 @@ contract CfdMarket is OrdersManager {
         return ++lastPositionId;
     }
 }
+
+

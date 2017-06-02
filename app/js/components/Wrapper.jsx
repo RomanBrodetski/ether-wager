@@ -22,7 +22,7 @@ class Wrapper extends React.Component {
 
   checkTestnetConnection() {
     web3.eth.getBlock(0, (e,r) => {
-      if (CfdMarket.address == "0x474d10bfb138bd64b93187c24e0df32c34561eeb") { //kovan
+      if (CfdMarket.address == "0x7ce000147713ecf64c13a5c4e8f3c91323d74b4d") { //kovan
         if (r.hash == "0xa3c565fc15c7478862d50ccd6561e3c06b24cc509bf388941c25ea985ce32cb9") {
           this.checkAccountUnlocked()
         } else {

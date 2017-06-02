@@ -16,7 +16,7 @@
       "OraclizeAddrResolverI": {"deploy": false},
       "usingOraclize": {"deploy": false},
       "CfdMarket": {
-        "address": "0x474d10bfb138bd64b93187c24e0df32c34561eeb"
+        "address": "0x7ce000147713ecf64c13a5c4e8f3c91323d74b4d"
       }
     }
   },
